@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "433749705484",
+    "project_id": "student-ride-sharing-app",
+    "storage_bucket": "student-ride-sharing-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433749705484:android:f4fa69702886eb711c3f29",
+        "android_client_info": {
+          "package_name": "com.example.student_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtPj7609DeEZdIZaPa-OkyHjteOGQT_Uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
