@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../ride_controller.dart';
 import 'widgets/location_selector.dart';
 import 'widgets/vehicle_selector.dart';
+import 'tracking_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   @override
@@ -241,10 +242,19 @@ class _HomePageState extends ConsumerState<HomePage>
                           Navigator.pop(context);
 
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                                "تم إرسال الطلب بنجاح! رقم الرحلة: $rideId"),
+                            content: Text("تم إرسال الطلب بنجاح!"),
                             backgroundColor: Colors.green,
                           ));
+
+                          if (mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    TrackingPage(rideId: rideId),
+                              ),
+                            );
+                          }
                         } catch (e) {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
