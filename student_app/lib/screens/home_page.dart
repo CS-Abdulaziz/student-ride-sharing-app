@@ -4,11 +4,14 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../ride_controller.dart';
 import 'widgets/location_selector.dart';
 import 'widgets/vehicle_selector.dart';
 import 'tracking_page.dart';
+import 'profile_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   @override
@@ -18,9 +21,10 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
   final MapController _mapController = MapController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String _pickupLocation = "جاري تحديد الموقع...";
-  String _destinationLocation = "اختر الوجهة";
+  String _pickupLocation = "Locating...";
+  String _destinationLocation = "Choose Destination";
 
   LatLng _pickupLatLng = LatLng(24.7136, 46.6753);
   LatLng? _destinationLatLng;
@@ -56,10 +60,10 @@ class _HomePageState extends ConsumerState<HomePage>
     setState(() {
       _isLoadingAddress = true;
       if (_isEditingPickup) {
-        _pickupLocation = "جاري جلب العنوان...";
+        _pickupLocation = "Loading address...";
         _pickupLatLng = point;
       } else {
-        _destinationLocation = "جاري جلب العنوان...";
+        _destinationLocation = "Loading address...";
         _destinationLatLng = point;
       }
     });
@@ -119,8 +123,8 @@ class _HomePageState extends ConsumerState<HomePage>
             }
           });
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("لم يتم العثور على المكان")));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Location not found")));
         }
       }
     } catch (e) {
@@ -133,13 +137,14 @@ class _HomePageState extends ConsumerState<HomePage>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(_isEditingPickup ? "بحث عن نقطة انطلاق" : "بحث عن وجهة"),
+        title: Text(
+            _isEditingPickup ? "Search Pickup Point" : "Search Destination"),
         content: TextField(
             controller: searchCtrl,
-            decoration: InputDecoration(hintText: "اكتب اسم المكان...")),
+            decoration: InputDecoration(hintText: "Type location name...")),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context), child: Text("إلغاء")),
+              onPressed: () => Navigator.pop(context), child: Text("Cancel")),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
@@ -148,7 +153,7 @@ class _HomePageState extends ConsumerState<HomePage>
             style: ElevatedButton.styleFrom(
                 backgroundColor:
                     _isEditingPickup ? Color(0xFF7F00FF) : Colors.red),
-            child: Text("بحث", style: TextStyle(color: Colors.white)),
+            child: Text("Search", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -157,7 +162,98 @@ class _HomePageState extends ConsumerState<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    final String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
+
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            FutureBuilder<DocumentSnapshot>(
+              future: currentUserId != null
+                  ? FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(currentUserId)
+                      .get()
+                  : null,
+              builder: (context, snapshot) {
+                String displayName = "Loading...";
+                String universityId = "...";
+                String phone = "";
+
+                if (snapshot.hasData && snapshot.data != null) {
+                  var data = snapshot.data!.data() as Map<String, dynamic>?;
+                  if (data != null) {
+                    displayName = data['name'] ?? "User";
+                    universityId = data['universityId'] ?? "";
+                    phone = data['phone'] ?? "";
+                  }
+                }
+
+                return Container(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top + 20,
+                      bottom: 30,
+                      left: 20,
+                      right: 20),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF7F00FF),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 35,
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          displayName.isNotEmpty
+                              ? displayName[0].toUpperCase()
+                              : "U",
+                          style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF7F00FF)),
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(displayName,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
+                            SizedBox(height: 8),
+                            Text("ID: $universityId",
+                                style: TextStyle(
+                                    color: Colors.white70, fontSize: 14)),
+                            if (phone.isNotEmpty)
+                              Text("Phone: $phone",
+                                  style: TextStyle(
+                                      color: Colors.white70, fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.history, color: Color(0xFF7F00FF)),
+              title: Text("Ride History"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()));
+              },
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           FlutterMap(
@@ -199,6 +295,23 @@ class _HomePageState extends ConsumerState<HomePage>
               ],
             ),
           ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () => _scaffoldKey.currentState?.openDrawer(),
+                    child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.menu, color: Colors.black)),
+                  ),
+                  // تم حذف زر البروفايل من هنا كما طلبت
+                ],
+              ),
+            ),
+          ),
           Positioned(
             bottom: 0,
             left: 0,
@@ -227,7 +340,6 @@ class _HomePageState extends ConsumerState<HomePage>
 
                         try {
                           final selectedCar = _rides[_selectedRideIndex];
-
                           String rideId = await ref
                               .read(rideControllerProvider)
                               .requestRide(
@@ -238,14 +350,11 @@ class _HomePageState extends ConsumerState<HomePage>
                                 carType: selectedCar['name'],
                                 price: selectedCar['price'],
                               );
-
                           Navigator.pop(context);
-
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("تم إرسال الطلب بنجاح!"),
+                            content: Text("Request sent successfully!"),
                             backgroundColor: Colors.green,
                           ));
-
                           if (mounted) {
                             Navigator.push(
                               context,
@@ -258,7 +367,7 @@ class _HomePageState extends ConsumerState<HomePage>
                         } catch (e) {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("خطأ: $e"),
+                              content: Text("Error: $e"),
                               backgroundColor: Colors.red));
                         }
                       },
@@ -280,9 +389,10 @@ class _HomePageState extends ConsumerState<HomePage>
                       onSearchTap: _showSearchDialog,
                       onConfirmTap: () {
                         if (_destinationLatLng == null ||
-                            _destinationLocation == "اختر الوجهة") {
+                            _destinationLocation == "Choose Destination") {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("الرجاء تحديد الوجهة أولاً")));
+                              content:
+                                  Text("Please select destination first")));
                           return;
                         }
                         setState(() => _isSelectingRide = true);

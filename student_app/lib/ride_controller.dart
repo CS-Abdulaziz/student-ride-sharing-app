@@ -40,7 +40,7 @@ class RideController {
 
       return rideRef.id;
     } catch (e) {
-      throw "فشل في إرسال الطلب: $e";
+      throw "Failed to send request: $e";
     }
   }
 }

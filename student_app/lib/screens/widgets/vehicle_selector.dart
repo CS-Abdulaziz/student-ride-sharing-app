@@ -30,7 +30,7 @@ class _VehicleSelectorState extends State<VehicleSelector> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("اختر المركبة",
+            Text("Select Vehicle",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             IconButton(icon: Icon(Icons.close), onPressed: widget.onClose),
           ],
@@ -88,7 +88,7 @@ class _VehicleSelectorState extends State<VehicleSelector> {
             onPressed: widget.onConfirm,
             style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black, shape: StadiumBorder()),
-            child: Text("تأكيد الحجز",
+            child: Text("Confirm Booking",
                 style: TextStyle(color: Colors.white, fontSize: 16)),
           ),
         ),

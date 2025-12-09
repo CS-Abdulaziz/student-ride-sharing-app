@@ -15,6 +15,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   bool _isLoading = false;
 
   void _handleLogin() async {
+    FocusScope.of(context).unfocus();
     setState(() => _isLoading = true);
     try {
       await ref.read(authControllerProvider).login(
@@ -23,10 +24,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.green, content: Text("Login Success!")));
-
-        Navigator.pushReplacement(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.green, content: Text("Login Successful!")));        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
@@ -42,13 +41,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
-                child: Center(
-                    child: Icon(Icons.school,
-                        size: 100, color: Color(0xFF6A1B9A)))),
+              child: Center(
+                child: Container(
+                  height: 200,
+                  width: 200,
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
             Container(
               padding: EdgeInsets.all(30),
               decoration: BoxDecoration(
@@ -65,25 +73,58 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   SizedBox(height: 20),
                   TextField(
                     controller: _universityIdController,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: "University ID"),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "University ID",
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                   ),
                   SizedBox(height: 15),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: "Password"),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Password",
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                   ),
                   SizedBox(height: 20),
                   _isLoading
                       ? CircularProgressIndicator(color: Colors.white)
-                      : ElevatedButton(
-                          onPressed: _handleLogin, child: Text("Login")),
+                      : Center(
+                          child: SizedBox(
+                            width: 200,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: _handleLogin,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Color(0xFF6A1B9A),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              child: Text("Login",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                        ),
                   TextButton(
                     onPressed: () => Navigator.push(context,
                         MaterialPageRoute(builder: (_) => SignUpPage())),

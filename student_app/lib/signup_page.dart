@@ -16,7 +16,11 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
 
+  final Color _primaryColor = const Color(0xFF6A1B9A);
+
   void _handleSignUp() async {
+    FocusScope.of(context).unfocus();
+
     if (_passwordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Passwords do not match")));
@@ -33,7 +37,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.green,
-            content: Text("Created Successfully")));
+            content: Text("Account Created Successfully")));
         Navigator.pop(context);
       }
     } catch (e) {
@@ -47,14 +51,19 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient:
-              LinearGradient(colors: [Color(0xFF9446C2), Color(0xFFD9A6F9)]),
+      backgroundColor: _primaryColor,
+      appBar: AppBar(
+        backgroundColor: _primaryColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
+      ),
+      body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
+            padding: EdgeInsets.all(20),
             child: Column(
               children: [
                 Text("New User",
@@ -62,18 +71,36 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                         color: Colors.white,
                         fontSize: 30,
                         fontWeight: FontWeight.bold)),
-                SizedBox(height: 20),
-                _buildField(_nameController, "User Name"),
-                _buildField(_universityIdController, "University ID"),
-                _buildField(_phoneController, "Phone"),
-                _buildField(_passwordController, "Password", isObscure: true),
-                _buildField(_confirmPasswordController, "Confirm Password",
+                SizedBox(height: 30),
+                _buildField(_nameController, "Full Name", Icons.person),
+                _buildField(
+                    _universityIdController, "University ID", Icons.school),
+                _buildField(_phoneController, "Phone", Icons.phone),
+                _buildField(_passwordController, "Password", Icons.lock,
                     isObscure: true),
-                SizedBox(height: 20),
+                _buildField(_confirmPasswordController, "Confirm Password",
+                    Icons.lock_outline,
+                    isObscure: true),
+                SizedBox(height: 30),
                 _isLoading
                     ? CircularProgressIndicator(color: Colors.white)
-                    : ElevatedButton(
-                        onPressed: _handleSignUp, child: Text("Sign Up")),
+                    : SizedBox(
+                        width: 200,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: _handleSignUp,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: _primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: Text("Sign Up",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
               ],
             ),
           ),
@@ -82,18 +109,24 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     );
   }
 
-  Widget _buildField(TextEditingController controller, String hint,
+  Widget _buildField(
+      TextEditingController controller, String hint, IconData icon,
       {bool isObscure = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: TextField(
         controller: controller,
         obscureText: isObscure,
         decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: _primaryColor),
           filled: true,
           fillColor: Colors.white,
           hintText: hint,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
+          ),
         ),
       ),
     );

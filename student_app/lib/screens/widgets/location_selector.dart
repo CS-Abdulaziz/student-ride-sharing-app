@@ -28,7 +28,7 @@ class LocationSelector extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("حدد مسارك",
+        Text("Set Your Route",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         SizedBox(height: 15),
         InkWell(
@@ -52,10 +52,10 @@ class LocationSelector extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("من أين؟",
+                      Text("From?",
                           style: TextStyle(color: Colors.grey, fontSize: 10)),
                       isEditingPickup && isLoadingAddress
-                          ? Text("جاري التحديث...",
+                          ? Text("Updating...",
                               style: TextStyle(color: Colors.grey))
                           : Text(pickupLocation,
                               style: TextStyle(fontWeight: FontWeight.bold),
@@ -92,10 +92,10 @@ class LocationSelector extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("إلى أين؟",
+                      Text("To?",
                           style: TextStyle(color: Colors.grey, fontSize: 10)),
                       !isEditingPickup && isLoadingAddress
-                          ? Text("جاري التحديث...",
+                          ? Text("Updating...",
                               style: TextStyle(color: Colors.grey))
                           : Text(destinationLocation,
                               style: TextStyle(fontWeight: FontWeight.bold),
@@ -121,7 +121,7 @@ class LocationSelector extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
-            child: Text("اختيار السيارة",
+            child: Text("Select Vehicle",
                 style: TextStyle(color: Colors.white, fontSize: 16)),
           ),
         ),

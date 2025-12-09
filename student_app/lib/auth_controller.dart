@@ -38,7 +38,7 @@ class AuthController {
       });
       print("Data Saved Successfully!");
     } on FirebaseAuthException catch (e) {
-      throw e.message ?? "حدث خطأ أثناء التسجيل";
+      throw e.message ?? "An error occurred during registration";
     } catch (e) {
       print("ERROR IN FIRESTORE: $e");
 
@@ -56,7 +56,7 @@ class AuthController {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      throw e.message ?? "فشل تسجيل الدخول";
+      throw e.message ?? "Login failed";
     }
   }
 }
