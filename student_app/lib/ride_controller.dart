@@ -6,8 +6,29 @@ import 'package:latlong2/latlong.dart';
 final rideControllerProvider = Provider((ref) => RideController());
 
 class RideController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> _cancelPreviousPendingRides(String userId) async {
+    QuerySnapshot previousRides = await _firestore
+        .collection('rides')
+        .where('passengerId', isEqualTo: userId)
+        .where('status', isEqualTo: 'pending')
+        .get();
+
+    if (previousRides.docs.isNotEmpty) {
+      WriteBatch batch = _firestore.batch();
+      for (var doc in previousRides.docs) {
+        batch.update(doc.reference, {
+          'status': 'cancelled',
+          'cancelReason': 'Auto-cancelled: New ride requested.',
+          'cancelledAt': FieldValue.serverTimestamp(),
+        });
+      }
+      await batch.commit();
+      print("Cancelled ${previousRides.docs.length} previous pending rides.");
+    }
+  }
 
   Future<String> requestRide({
     required String pickupAddress,
@@ -19,6 +40,8 @@ class RideController {
   }) async {
     try {
       String userId = _auth.currentUser!.uid;
+
+      await _cancelPreviousPendingRides(userId);
 
       DocumentReference rideRef = _firestore.collection('rides').doc();
 

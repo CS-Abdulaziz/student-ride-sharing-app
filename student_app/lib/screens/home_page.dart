@@ -307,7 +307,6 @@ class _HomePageState extends ConsumerState<HomePage>
                         backgroundColor: Colors.white,
                         child: Icon(Icons.menu, color: Colors.black)),
                   ),
-                  // تم حذف زر البروفايل من هنا كما طلبت
                 ],
               ),
             ),

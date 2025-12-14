@@ -41,7 +41,6 @@ class AuthController {
       throw e.message ?? "An error occurred during registration";
     } catch (e) {
       print("ERROR IN FIRESTORE: $e");
-
       throw "Firestore Error: $e";
     }
   }
@@ -56,7 +55,31 @@ class AuthController {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      throw e.message ?? "Login failed";
+      String errorMessage = '';
+
+      switch (e.code) {
+        case 'invalid-credential':
+        case 'user-not-found':
+        case 'wrong-password':
+          errorMessage = "Incorrect University ID or Password.";
+          break;
+        case 'user-disabled':
+          errorMessage = "This account has been disabled.";
+          break;
+        case 'too-many-requests':
+          errorMessage = "Too many failed attempts. Please try again later.";
+          break;
+        case 'network-request-failed':
+          errorMessage =
+              "Network error. Please check your internet connection.";
+          break;
+        default:
+          errorMessage = "Login failed. Please try again.";
+      }
+
+      throw errorMessage;
+    } catch (e) {
+      throw "An unexpected error occurred. Please try again.";
     }
   }
 }
