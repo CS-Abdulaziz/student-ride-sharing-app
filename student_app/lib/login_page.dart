@@ -281,7 +281,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     TextButton(
                       onPressed: () => Navigator.push(context,
                           MaterialPageRoute(builder: (_) => SignUpPage())),
-                      child: Text("New user? Click to sign up",
+                      child: Text("New user?",
                           style: TextStyle(color: Colors.white)),
                     )
                   ],

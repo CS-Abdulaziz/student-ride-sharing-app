@@ -96,4 +96,8 @@ class AuthController {
       throw "An unexpected error occurred: $e";
     }
   }
+
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
 }
