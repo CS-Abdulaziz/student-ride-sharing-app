@@ -206,7 +206,7 @@ def support_list(request):
     # Order by createdAt with fallback
     try:
         direction = gcf.Query.ASCENDING if sort_value == "oldest" else gcf.Query.DESCENDING
-        q = db.collection("support_tickets").order_by("createdAt", direction=direction)
+        q = db.collection("support_tickets").order_by("timestamp", direction=direction)
         if not search_value:
             q = q.limit(50)
         docs = q.stream()
