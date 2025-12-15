@@ -39,14 +39,14 @@ class LocationSelector extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(
-                color: isEditingPickup ? Color(0xFF7F00FF) : Colors.grey[300]!,
+                color: isEditingPickup ? Color(0xFF6A1B9A) : Colors.grey[300]!,
                 width: isEditingPickup ? 2 : 1,
               ),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                Icon(Icons.my_location, color: Color(0xFF7F00FF)),
+                Icon(Icons.my_location, color: Color(0xFF6A1B9A)),
                 SizedBox(width: 15),
                 Expanded(
                   child: Column(
@@ -64,7 +64,7 @@ class LocationSelector extends StatelessWidget {
                   ),
                 ),
                 if (isEditingPickup)
-                  Icon(Icons.edit, size: 16, color: Color(0xFF7F00FF)),
+                  Icon(Icons.edit, size: 16, color: Color(0xFF6A1B9A)),
                 IconButton(icon: Icon(Icons.search), onPressed: onSearchTap),
               ],
             ),

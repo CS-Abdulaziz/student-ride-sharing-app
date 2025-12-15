@@ -37,22 +37,22 @@ class _HomePageState extends ConsumerState<HomePage>
 
   final List<Map<String, dynamic>> _rides = [
     {
-      "name": "Toyota Camry",
+      "name": "Small",
       "price": "15 SAR",
       "seats": "3-4",
-      "color": Colors.grey
+      "desc": "Economy",
     },
     {
-      "name": "Lexus R700",
+      "name": "Medium",
       "price": "25 SAR",
-      "seats": "2-3",
-      "color": Color(0xFF7F00FF)
+      "seats": "4-5",
+      "desc": "Standard",
     },
     {
-      "name": "Mercedes W90",
+      "name": "Large",
       "price": "40 SAR",
-      "seats": "4",
-      "color": Colors.black87
+      "seats": "6-7",
+      "desc": "Van/SUV",
     },
   ];
 
@@ -97,7 +97,7 @@ class _HomePageState extends ConsumerState<HomePage>
         context: context,
         barrierDismissible: false,
         builder: (c) =>
-            Center(child: CircularProgressIndicator(color: Color(0xFF7F00FF))));
+            Center(child: CircularProgressIndicator(color: Color(0xFF6A1B9A))));
 
     try {
       final url = Uri.parse(
@@ -152,7 +152,7 @@ class _HomePageState extends ConsumerState<HomePage>
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor:
-                    _isEditingPickup ? Color(0xFF7F00FF) : Colors.red),
+                    _isEditingPickup ? Color(0xFF6A1B9A) : Colors.red),
             child: Text("Search", style: TextStyle(color: Colors.white)),
           ),
         ],
@@ -198,7 +198,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       left: 20,
                       right: 20),
                   decoration: BoxDecoration(
-                    color: Color(0xFF7F00FF),
+                    color: Color(0xFF6A1B9A),
                   ),
                   child: Row(
                     children: [
@@ -212,7 +212,7 @@ class _HomePageState extends ConsumerState<HomePage>
                           style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF7F00FF)),
+                              color: Color(0xFF6A1B9A)),
                         ),
                       ),
                       SizedBox(width: 20),
@@ -243,7 +243,7 @@ class _HomePageState extends ConsumerState<HomePage>
               },
             ),
             ListTile(
-              leading: Icon(Icons.history, color: Color(0xFF7F00FF)),
+              leading: Icon(Icons.history, color: Color(0xFF6A1B9A)),
               title: Text("Ride History"),
               onTap: () {
                 Navigator.pop(context);
@@ -282,7 +282,7 @@ class _HomePageState extends ConsumerState<HomePage>
                         padding: const EdgeInsets.only(bottom: 40.0),
                         child: Icon(Icons.location_pin,
                             color: _isEditingPickup
-                                ? Color(0xFF7F00FF)
+                                ? Color(0xFF6A1B9A)
                                 : Colors.red,
                             size: 50))),
                 Center(
@@ -335,7 +335,7 @@ class _HomePageState extends ConsumerState<HomePage>
                             barrierDismissible: false,
                             builder: (c) => Center(
                                 child: CircularProgressIndicator(
-                                    color: Color(0xFF7F00FF))));
+                                    color: Color(0xFF6A1B9A))));
 
                         try {
                           final selectedCar = _rides[_selectedRideIndex];

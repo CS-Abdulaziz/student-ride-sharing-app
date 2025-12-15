@@ -9,7 +9,7 @@ class AuthController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String _generateEmail(String universityId) {
-    return "$universityId@student.app";
+    return "$universityId@sm.imamu.edu.sa";
   }
 
   Future<void> signUp({
@@ -41,7 +41,7 @@ class AuthController {
       throw e.message ?? "An error occurred during registration";
     } catch (e) {
       print("ERROR IN FIRESTORE: $e");
-      throw "Firestore Error: $e";
+      throw "Database error: $e";
     }
   }
 
@@ -61,7 +61,7 @@ class AuthController {
         case 'invalid-credential':
         case 'user-not-found':
         case 'wrong-password':
-          errorMessage = "Incorrect University ID or Password.";
+          errorMessage = "Invalid university ID or password.";
           break;
         case 'user-disabled':
           errorMessage = "This account has been disabled.";
@@ -80,6 +80,20 @@ class AuthController {
       throw errorMessage;
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
+    }
+  }
+
+  Future<void> resetPassword({required String universityId}) async {
+    try {
+      String email = _generateEmail(universityId);
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
+        throw "Password reset instructions sent to your university email (if account exists).";
+      }
+      throw e.message ?? "Failed to send password reset email.";
+    } catch (e) {
+      throw "An unexpected error occurred: $e";
     }
   }
 }

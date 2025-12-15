@@ -23,7 +23,7 @@ class _RatingPageState extends State<RatingPage> {
   void _submitRating() async {
     if (_rating == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("الرجاء تحديد تقييم قبل الإرسال")));
+          SnackBar(content: Text("Please select a rating before submitting")));
       return;
     }
 
@@ -76,8 +76,8 @@ class _RatingPageState extends State<RatingPage> {
     } catch (e) {
       if (mounted) {
         setState(() => _isSubmitting = false);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("فشل في إرسال التقييم: $e")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Failed to submit rating: $e")));
       }
     }
   }
@@ -97,10 +97,10 @@ class _RatingPageState extends State<RatingPage> {
               children: [
                 Icon(Icons.check_circle, size: 80, color: Colors.green),
                 SizedBox(height: 20),
-                Text("وصلت بسلام!",
+                Text("Arrived safely!",
                     style:
                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                Text("كيف كانت رحلتك؟",
+                Text("How was your ride?",
                     style: TextStyle(color: Colors.grey, fontSize: 16)),
                 SizedBox(height: 40),
                 Row(
@@ -123,7 +123,7 @@ class _RatingPageState extends State<RatingPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("نجمة واحدة؟ يرجى كتابة شكوتك:",
+                        Text("One star? Please write your complaint:",
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -135,7 +135,7 @@ class _RatingPageState extends State<RatingPage> {
                           maxLength: 250,
                           decoration: InputDecoration(
                             hintText:
-                                "اكتب هنا تفاصيل الشكوى بحد أقصى 250 حرف...",
+                                "Write complaint details here, max 250 characters...",
                             fillColor: Colors.grey[100],
                             filled: true,
                             border: OutlineInputBorder(
@@ -153,7 +153,7 @@ class _RatingPageState extends State<RatingPage> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'الرجاء إدخال تفاصيل الشكوى قبل الإرسال.';
+                              return 'Please enter complaint details before submitting.';
                             }
                             return null;
                           },
@@ -171,7 +171,7 @@ class _RatingPageState extends State<RatingPage> {
                         backgroundColor: _primaryColor),
                     child: _isSubmitting
                         ? CircularProgressIndicator(color: Colors.white)
-                        : Text("إرسال التقييم",
+                        : Text("Submit Rating",
                             style:
                                 TextStyle(color: Colors.white, fontSize: 16)),
                   ),

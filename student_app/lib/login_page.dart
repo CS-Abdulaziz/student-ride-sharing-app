@@ -32,8 +32,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.green,
-            content: Text("تم تسجيل الدخول بنجاح!"))); // ترجمة
+            backgroundColor: Colors.green, content: Text("Login successful!")));
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
@@ -45,6 +44,109 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _showResetPasswordDialog() {
+    final resetIdController = TextEditingController();
+    final resetFormKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Center(
+            child: Text(
+              "Password Reset",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: _primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
+            ),
+          ),
+          content: Form(
+            key: resetFormKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 15),
+                TextFormField(
+                  controller: resetIdController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Enter your university ID",
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide: BorderSide(color: Colors.grey.shade400),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide: BorderSide(color: _primaryColor, width: 2),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter university ID.';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text("Cancel", style: TextStyle(color: Colors.grey)),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: Text("Send", style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () async {
+                if (resetFormKey.currentState!.validate()) {
+                  Navigator.of(context).pop();
+
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    backgroundColor: _primaryColor,
+                    content: Text("Sending email..."),
+                    duration: Duration(seconds: 2),
+                  ));
+
+                  try {
+                    await ref.read(authControllerProvider).resetPassword(
+                        universityId: resetIdController.text.trim());
+
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text(
+                          "Password reset instructions sent to your university email."),
+                    ));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(e.toString().replaceAll("Exception: ", "")),
+                    ));
+                  }
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildInputField(
@@ -123,7 +225,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    Text("دخول",
+                    Text("Login",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 28,
@@ -131,18 +233,28 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     SizedBox(height: 20),
                     _buildInputField(
                       _universityIdController,
-                      "الرقم الجامعي",
-                      "الرجاء إدخال الرقم الجامعي",
+                      "University ID",
+                      "Please enter university ID",
                       keyboard: TextInputType.number,
                     ),
                     SizedBox(height: 15),
                     _buildInputField(
                       _passwordController,
-                      "كلمة المرور",
-                      "الرجاء إدخال كلمة المرور",
+                      "Password",
+                      "Please enter password",
                       isObscure: true,
                     ),
-                    SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _showResetPasswordDialog,
+                        child: Text(
+                          "Forgot password?",
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
                     _isLoading
                         ? CircularProgressIndicator(color: Colors.white)
                         : Center(
@@ -158,17 +270,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     borderRadius: BorderRadius.circular(30),
                                   ),
                                 ),
-                                child: Text("دخول",
+                                child: Text("Login",
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                               ),
                             ),
                           ),
+                    SizedBox(height: 5),
                     TextButton(
                       onPressed: () => Navigator.push(context,
                           MaterialPageRoute(builder: (_) => SignUpPage())),
-                      child: Text("مستخدم جديد؟",
+                      child: Text("New user? Click to sign up",
                           style: TextStyle(color: Colors.white)),
                     )
                   ],

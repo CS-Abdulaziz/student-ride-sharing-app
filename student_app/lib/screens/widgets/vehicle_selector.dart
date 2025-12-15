@@ -27,52 +27,87 @@ class _VehicleSelectorState extends State<VehicleSelector> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Header
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Select Vehicle",
+            Text("Select Vehicle Size",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             IconButton(icon: Icon(Icons.close), onPressed: widget.onClose),
           ],
         ),
         SizedBox(height: 10),
+
         SizedBox(
-          height: 140,
+          height: 150,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: widget.rides.length,
             itemBuilder: (context, index) {
               bool selected = _selectedRideIndex == index;
+              final ride = widget.rides[index];
+
               return GestureDetector(
                 onTap: () {
                   setState(() => _selectedRideIndex = index);
                   widget.onRideSelected(index);
                 },
                 child: Container(
-                  width: 120,
-                  margin: EdgeInsets.only(right: 10),
-                  padding: EdgeInsets.all(10),
+                  width: 130,
+                  margin: EdgeInsets.only(right: 12),
+                  padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: selected
-                        ? Color(0xFF7F00FF).withOpacity(0.1)
+                        ? Color(0xFF6A1B9A).withOpacity(0.05)
                         : Colors.white,
                     border: Border.all(
-                        color:
-                            selected ? Color(0xFF7F00FF) : Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(15),
+                        color: selected ? Color(0xFF6A1B9A) : Colors.grey[300]!,
+                        width: 2),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.directions_car,
-                          size: 40,
-                          color: selected ? Color(0xFF7F00FF) : Colors.black),
+                      Icon(Icons.directions_car_filled,
+                          size: 35, color: Colors.black),
+
+                      SizedBox(height: 8),
+
+                      // Name
+                      Text(ride['name'],
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+
+                      // Price
+                      Text(ride['price'],
+                          style: TextStyle(
+                              color: Color(0xFF6A1B9A),
+                              fontWeight: FontWeight.w600)),
+
                       SizedBox(height: 5),
-                      Text(widget.rides[index]['name'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center),
-                      Text(widget.rides[index]['price'],
-                          style: TextStyle(color: Colors.grey)),
+
+                      // Seats Info (Range)
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.person,
+                                size: 14, color: Colors.grey[600]),
+                            SizedBox(width: 4),
+                            Text(ride['seats'],
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[800])),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -81,6 +116,7 @@ class _VehicleSelectorState extends State<VehicleSelector> {
           ),
         ),
         SizedBox(height: 20),
+
         SizedBox(
           width: double.infinity,
           height: 50,

@@ -61,7 +61,7 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF7F00FF),
+      backgroundColor: Color(0xFF6A1B9A),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -105,7 +105,7 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
                             title: Text(_reasons[index],
                                 style: TextStyle(
                                     color: Colors.grey[800], fontSize: 14)),
-                            activeColor: Color(0xFF7F00FF),
+                            activeColor: Color(0xFF6A1B9A),
                             contentPadding: EdgeInsets.zero,
                             dense: true);
                       },

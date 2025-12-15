@@ -38,7 +38,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.green,
-            content: Text("تم إنشاء الحساب بنجاح")));
+            content: Text("Account created successfully")));
         Navigator.pop(context);
       }
     } catch (e) {
@@ -69,7 +69,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
               key: _formKey,
               child: Column(
                 children: [
-                  Text("تسجيل حساب جديد", // ترجمة
+                  Text("Sign Up",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 30,
@@ -77,40 +77,40 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   SizedBox(height: 30),
                   _buildField(
                     _nameController,
-                    "الاسم الكامل",
+                    "Full Name",
                     Icons.person,
-                    'الرجاء إدخال الاسم',
+                    'Please enter your name',
                     inputType: 'name',
                   ),
                   _buildField(
                     _universityIdController,
-                    "الرقم الجامعي",
+                    "University ID",
                     Icons.school,
-                    'الرجاء إدخال الرقم الجامعي',
+                    'Please enter university ID',
                     keyboard: TextInputType.number,
                     inputType: 'id',
                   ),
                   _buildField(
                     _phoneController,
-                    "رقم الجوال (966XXXXXXXXX)",
+                    "Phone Number (966XXXXXXXXX)",
                     Icons.phone,
-                    'الرجاء إدخال رقم الجوال',
+                    'Please enter phone number',
                     keyboard: TextInputType.phone,
                     inputType: 'phone',
                   ),
                   _buildField(
                     _passwordController,
-                    "كلمة المرور",
+                    "Password",
                     Icons.lock,
-                    'الرجاء إدخال كلمة المرور',
+                    'Please enter password',
                     isObscure: true,
                     inputType: 'password',
                   ),
                   _buildField(
                     _confirmPasswordController,
-                    "تأكيد كلمة المرور",
+                    "Confirm Password",
                     Icons.lock_outline,
-                    'الرجاء تأكيد كلمة المرور',
+                    'Please confirm password',
                     isObscure: true,
                     inputType: 'confirm_password',
                   ),
@@ -129,7 +129,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            child: Text("تسجيل",
+                            child: Text("Sign Up",
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
                           ),
@@ -182,31 +182,31 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
           switch (inputType) {
             case 'name':
               if (!RegExp(r'^[a-zA-Z\u0621-\u064A\s]+$').hasMatch(value)) {
-                return 'يجب أن يحتوي الاسم على حروف ومسافات فقط.';
+                return 'Name must contain letters and spaces only.';
               }
               break;
             case 'id':
               if (!RegExp(r'^\d{9}$').hasMatch(value)) {
-                return 'يجب أن يتكون الرقم الجامعي من 9 أرقام فقط.';
+                return 'University ID must be exactly 9 digits.';
               }
               break;
             case 'phone':
               if (!RegExp(r'^966[0-9]{9}$').hasMatch(value)) {
-                return 'يجب أن يبدأ رقم الجوال بـ 966 ويتكون من 12 رقم.';
+                return 'Phone number must start with 966 and be 12 digits.';
               }
               break;
             case 'password':
               if (value.length < 8) {
-                return 'يجب أن لا تقل كلمة المرور عن 8 خانات.';
+                return 'Password must be at least 8 characters.';
               }
               if (!RegExp(r'^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$')
                   .hasMatch(value)) {
-                return 'يجب أن تحتوي كلمة المرور على حروف وأرقام.';
+                return 'Password must contain letters and numbers.';
               }
               break;
             case 'confirm_password':
               if (value != _passwordController.text) {
-                return 'كلمة المرور غير متطابقة.';
+                return 'Passwords do not match.';
               }
               break;
           }
