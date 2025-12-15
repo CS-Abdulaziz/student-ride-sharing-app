@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_core/shared_core.dart';
-import '../cubit/login_cubit.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
               width: double.infinity,
               //height: 424,
               padding: const EdgeInsets.fromLTRB(32, 48, 32, 32),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xFF9446C2),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(50.0),
@@ -49,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
+                    const Text(
                       "Log in",
                       style: TextStyle(
                         color: Colors.white,
@@ -58,14 +55,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
 
                     _buildTextField(
                       controller: _universityIdController,
                       label: 'University ID',
                     ),
 
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
 
                     _buildTextField(
                       controller: _passwordController,
@@ -79,26 +76,26 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           // Should be implemented when the user click on it.
                         },
-                        child: Text(
+                        child: const Text(
                           "New user?",
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
                     ),
 
-                    SizedBox(height: 16,),
+                    const SizedBox(height: 16,),
 
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 100, 0, 158),
-                        foregroundColor: Color.fromARGB(255, 254, 252, 255),
-                        minimumSize: Size(double.infinity, 50),
+                        foregroundColor: const Color.fromARGB(255, 254, 252, 255),
+                        minimumSize: const Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         "Continue",
                         style: TextStyle(
                           fontSize: 24,
@@ -126,13 +123,13 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 20.0,
             fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
 
         Container(
           decoration: BoxDecoration(
@@ -144,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.black.withOpacity(0.25),
                 spreadRadius: 1,
                 blurRadius: 5,
-                offset: Offset(0, 3),
+                offset: const Offset(0, 3),
               ),
             ],
           ),
@@ -152,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: controller,
             obscureText: isPassword,
             keyboardType: keyboardType,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               filled: false,
               border: InputBorder.none,
 
