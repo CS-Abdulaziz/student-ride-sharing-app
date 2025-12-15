@@ -268,9 +268,7 @@ def users_list(request):
 
 
 from django.views.decorators.http import require_POST
-from django.views.decorators.http import require_POST
 from django.http import HttpResponseBadRequest
-from django.shortcuts import redirect
 
 
 @require_POST
