@@ -24,10 +24,12 @@ class TrackingPage extends StatelessWidget {
               .doc(rideId)
               .snapshots(),
           builder: (context, snapshot) {
-            if (snapshot.hasError) return Center(child: Text("Error occurred"));
-            if (!snapshot.hasData || !snapshot.data!.exists)
-              return Center(
+            if (snapshot.hasError)
+              return const Center(child: Text("Error occurred"));
+            if (!snapshot.hasData || !snapshot.data!.exists) {
+              return const Center(
                   child: CircularProgressIndicator(color: Color(0xFF6A1B9A)));
+            }
 
             var rideData = snapshot.data!.data() as Map<String, dynamic>;
             String status = rideData['status'] ?? 'pending';
@@ -57,13 +59,13 @@ class TrackingPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.cancel_presentation,
+                    const Icon(Icons.cancel_presentation,
                         size: 80, color: Colors.orange),
-                    SizedBox(height: 20),
-                    Text("Sorry, Driver rejected your request",
+                    const SizedBox(height: 20),
+                    const Text("Sorry, Driver rejected your request",
                         style: TextStyle(
                             fontSize: 22, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pushAndRemoveUntil(
@@ -72,8 +74,8 @@ class TrackingPage extends StatelessWidget {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF6A1B9A)),
-                      child: Text("Back to Home",
+                          backgroundColor: const Color(0xFF6A1B9A)),
+                      child: const Text("Back to Home",
                           style: TextStyle(color: Colors.white)),
                     )
                   ],
@@ -109,13 +111,13 @@ class TrackingPage extends StatelessWidget {
                             point: pickupLatLng,
                             width: 40,
                             height: 40,
-                            child: Icon(Icons.my_location,
+                            child: const Icon(Icons.my_location,
                                 color: Color(0xFF6A1B9A), size: 35)),
                         Marker(
                             point: destinationLatLng,
                             width: 40,
                             height: 40,
-                            child: Icon(Icons.location_on,
+                            child: const Icon(Icons.location_on,
                                 color: Colors.red, size: 40)),
                       ]),
                     ],
@@ -127,16 +129,16 @@ class TrackingPage extends StatelessWidget {
                   right: 0,
                   child: Center(
                     child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: const [
                           BoxShadow(color: Colors.black12, blurRadius: 10)
                         ],
                       ),
-                      child: Text("Track Ride",
+                      child: const Text("Track Ride",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
                     ),
@@ -147,8 +149,8 @@ class TrackingPage extends StatelessWidget {
                   right: 0,
                   bottom: 0,
                   child: Container(
-                    padding: EdgeInsets.fromLTRB(25, 10, 25, 50),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.fromLTRB(25, 10, 25, 50),
+                    decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(30)),
@@ -165,29 +167,29 @@ class TrackingPage extends StatelessWidget {
                         Container(
                           width: 40,
                           height: 5,
-                          margin: EdgeInsets.only(bottom: 20),
+                          margin: const EdgeInsets.only(bottom: 20),
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                         if (status == 'pending') ...[
-                          Text("Searching for a driver...",
+                          const Text("Searching for a driver...",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                           LinearProgressIndicator(
-                              color: Color(0xFF6A1B9A),
+                              color: const Color(0xFF6A1B9A),
                               backgroundColor: Colors.grey[200]),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           OutlinedButton.icon(
                             onPressed: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         CancelBookingPage(rideId: rideId))),
-                            icon: Icon(Icons.close, color: Colors.red),
-                            label: Text("Cancel Request",
+                            icon: const Icon(Icons.close, color: Colors.red),
+                            label: const Text("Cancel Request",
                                 style: TextStyle(color: Colors.red)),
                           ),
                         ] else if ((status == 'accepted' ||
@@ -200,8 +202,9 @@ class TrackingPage extends StatelessWidget {
                                 .doc(driverId)
                                 .get(),
                             builder: (context, driverSnapshot) {
-                              if (!driverSnapshot.hasData)
-                                return LinearProgressIndicator();
+                              if (!driverSnapshot.hasData) {
+                                return const LinearProgressIndicator();
+                              }
                               var dData = driverSnapshot.data!.data()
                                       as Map<String, dynamic>? ??
                                   {};
@@ -209,32 +212,32 @@ class TrackingPage extends StatelessWidget {
                               return Column(
                                 children: [
                                   if (status == 'arrived')
-                                    Text("Driver has Arrived!",
+                                    const Text("Driver has Arrived!",
                                         style: TextStyle(
                                             color: Colors.green,
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold))
                                   else if (status == 'in_progress')
-                                    Text("Enjoy your ride...",
+                                    const Text("Enjoy your ride...",
                                         style: TextStyle(
                                             color: Color(0xFF6A1B9A),
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold))
                                   else
-                                    Text("Driver is on the way!",
+                                    const Text("Driver is on the way!",
                                         style: TextStyle(
                                             color: Colors.green,
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold)),
-                                  SizedBox(height: 15),
+                                  const SizedBox(height: 15),
                                   Row(
                                     children: [
                                       CircleAvatar(
                                           radius: 35,
                                           backgroundColor: Colors.grey[200],
-                                          child: Icon(Icons.person,
+                                          child: const Icon(Icons.person,
                                               size: 40, color: Colors.black)),
-                                      SizedBox(width: 15),
+                                      const SizedBox(width: 15),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -243,7 +246,7 @@ class TrackingPage extends StatelessWidget {
                                             Text(
                                                 dData['fullName'] ??
                                                     "Unknown Driver",
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     fontSize: 20,
                                                     fontWeight:
                                                         FontWeight.bold)),
@@ -259,11 +262,11 @@ class TrackingPage extends StatelessWidget {
                                           status == 'accepted')
                                         IconButton(
                                             onPressed: () {},
-                                            icon: Icon(Icons.phone,
+                                            icon: const Icon(Icons.phone,
                                                 color: Colors.green)),
                                     ],
                                   ),
-                                  SizedBox(height: 20),
+                                  const SizedBox(height: 20),
                                   if (status == 'arrived') ...[
                                     SizedBox(
                                       width: double.infinity,
@@ -279,10 +282,10 @@ class TrackingPage extends StatelessWidget {
                                             ),
                                           );
                                         },
-                                        icon: Icon(Icons.payment,
-                                            color: const Color.fromARGB(
-                                                255, 0, 0, 0)),
-                                        label: Text("Pay Now to Start",
+                                        icon: const Icon(Icons.payment,
+                                            color:
+                                                Color.fromARGB(255, 0, 0, 0)),
+                                        label: const Text("Pay Now to Start",
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
@@ -297,20 +300,20 @@ class TrackingPage extends StatelessWidget {
                                     ),
                                   ] else if (status == 'in_progress') ...[
                                     Container(
-                                      padding: EdgeInsets.all(10),
+                                      padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                           color: const Color.fromARGB(
                                                   255, 70, 232, 6)
                                               .withOpacity(0.1),
                                           borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Row(
+                                              BorderRadius.circular(30)),
+                                      child: const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
                                           Icon(Icons.check_circle,
                                               size: 20,
-                                              color: const Color.fromARGB(
+                                              color: Color.fromARGB(
                                                   255, 69, 197, 0)),
                                           SizedBox(width: 5),
                                           Text("Ride Confirmed & Paid"),

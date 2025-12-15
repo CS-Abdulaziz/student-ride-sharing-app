@@ -4,6 +4,8 @@ import 'auth_controller.dart';
 import 'screens/home_page.dart';
 
 class SignUpPage extends ConsumerStatefulWidget {
+  const SignUpPage({super.key});
+
   @override
   ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
@@ -36,7 +38,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
             password: _passwordController.text.trim(),
           );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: Colors.green,
             content: Text("Account created successfully")));
         Navigator.pop(context);
@@ -57,24 +59,24 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
         backgroundColor: _primaryColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
-                  Text("Sign Up",
+                  const Text("Sign Up",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 30,
                           fontWeight: FontWeight.bold)),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   _buildField(
                     _nameController,
                     "Full Name",
@@ -114,9 +116,9 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                     isObscure: true,
                     inputType: 'confirm_password',
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   _isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : SizedBox(
                           width: 200,
                           height: 50,
@@ -129,7 +131,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            child: Text("Sign Up",
+                            child: const Text("Sign Up",
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
                           ),
@@ -159,19 +161,19 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
           filled: true,
           fillColor: Colors.white,
           hintText: hint,
-          errorStyle: TextStyle(fontSize: 12, color: Colors.red, height: 1.2),
-          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          errorStyle: const TextStyle(fontSize: 12, color: Colors.red, height: 1.2),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide.none,
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.0),
-            borderSide: BorderSide(color: Colors.red, width: 2),
+            borderSide: const BorderSide(color: Colors.red, width: 2),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.0),
-            borderSide: BorderSide(color: Colors.red, width: 2),
+            borderSide: const BorderSide(color: Colors.red, width: 2),
           ),
         ),
         validator: (value) {

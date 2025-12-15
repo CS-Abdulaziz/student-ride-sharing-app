@@ -23,7 +23,7 @@ class _RatingPageState extends State<RatingPage> {
   void _submitRating() async {
     if (_rating == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Please select a rating before submitting")));
+          const SnackBar(content: Text("Please select a rating before submitting")));
       return;
     }
 
@@ -95,14 +95,14 @@ class _RatingPageState extends State<RatingPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.check_circle, size: 80, color: Colors.green),
-                SizedBox(height: 20),
-                Text("Arrived safely!",
+                const Icon(Icons.check_circle, size: 80, color: Colors.green),
+                const SizedBox(height: 20),
+                const Text("Arrived safely!",
                     style:
                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                Text("How was your ride?",
+                const Text("How was your ride?",
                     style: TextStyle(color: Colors.grey, fontSize: 16)),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(5, (index) {
@@ -116,19 +116,19 @@ class _RatingPageState extends State<RatingPage> {
                     );
                   }),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 if (showComplaintBox)
                   Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("One star? Please write your complaint:",
+                        const Text("One star? Please write your complaint:",
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red)),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextFormField(
                           controller: _complaintController,
                           maxLines: 4,
@@ -145,11 +145,11 @@ class _RatingPageState extends State<RatingPage> {
                             errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                                 borderSide:
-                                    BorderSide(color: Colors.red, width: 1)),
+                                    const BorderSide(color: Colors.red, width: 1)),
                             focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                                 borderSide:
-                                    BorderSide(color: Colors.red, width: 1)),
+                                    const BorderSide(color: Colors.red, width: 1)),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -161,7 +161,7 @@ class _RatingPageState extends State<RatingPage> {
                       ],
                     ),
                   ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -170,8 +170,8 @@ class _RatingPageState extends State<RatingPage> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: _primaryColor),
                     child: _isSubmitting
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text("Submit Rating",
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("Submit Rating",
                             style:
                                 TextStyle(color: Colors.white, fontSize: 16)),
                   ),

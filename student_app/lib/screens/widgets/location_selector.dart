@@ -28,54 +28,54 @@ class LocationSelector extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Set Your Route",
+        const Text("Set Your Route",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        SizedBox(height: 15),
+        const SizedBox(height: 15),
         InkWell(
           onTap: onPickupTap,
           child: AnimatedContainer(
-            duration: Duration(milliseconds: 200),
-            padding: EdgeInsets.all(15),
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(
-                color: isEditingPickup ? Color(0xFF6A1B9A) : Colors.grey[300]!,
+                color: isEditingPickup ? const Color(0xFF6A1B9A) : Colors.grey[300]!,
                 width: isEditingPickup ? 2 : 1,
               ),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                Icon(Icons.my_location, color: Color(0xFF6A1B9A)),
-                SizedBox(width: 15),
+                const Icon(Icons.my_location, color: Color(0xFF6A1B9A)),
+                const SizedBox(width: 15),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("From?",
+                      const Text("From?",
                           style: TextStyle(color: Colors.grey, fontSize: 10)),
                       isEditingPickup && isLoadingAddress
-                          ? Text("Updating...",
+                          ? const Text("Updating...",
                               style: TextStyle(color: Colors.grey))
                           : Text(pickupLocation,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                               overflow: TextOverflow.ellipsis),
                     ],
                   ),
                 ),
                 if (isEditingPickup)
-                  Icon(Icons.edit, size: 16, color: Color(0xFF6A1B9A)),
-                IconButton(icon: Icon(Icons.search), onPressed: onSearchTap),
+                  const Icon(Icons.edit, size: 16, color: Color(0xFF6A1B9A)),
+                IconButton(icon: const Icon(Icons.search), onPressed: onSearchTap),
               ],
             ),
           ),
         ),
-        SizedBox(height: 15),
+        const SizedBox(height: 15),
         InkWell(
           onTap: onDestinationTap,
           child: AnimatedContainer(
-            duration: Duration(milliseconds: 200),
-            padding: EdgeInsets.all(15),
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(
@@ -86,31 +86,31 @@ class LocationSelector extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(Icons.location_on, color: Colors.red),
-                SizedBox(width: 15),
+                const Icon(Icons.location_on, color: Colors.red),
+                const SizedBox(width: 15),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("To?",
+                      const Text("To?",
                           style: TextStyle(color: Colors.grey, fontSize: 10)),
                       !isEditingPickup && isLoadingAddress
-                          ? Text("Updating...",
+                          ? const Text("Updating...",
                               style: TextStyle(color: Colors.grey))
                           : Text(destinationLocation,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                               overflow: TextOverflow.ellipsis),
                     ],
                   ),
                 ),
                 if (!isEditingPickup)
-                  Icon(Icons.edit, size: 16, color: Colors.red),
-                IconButton(icon: Icon(Icons.search), onPressed: onSearchTap),
+                  const Icon(Icons.edit, size: 16, color: Colors.red),
+                IconButton(icon: const Icon(Icons.search), onPressed: onSearchTap),
               ],
             ),
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         SizedBox(
           width: double.infinity,
           height: 50,
@@ -121,7 +121,7 @@ class LocationSelector extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
-            child: Text("Select Vehicle",
+            child: const Text("Select Vehicle",
                 style: TextStyle(color: Colors.white, fontSize: 16)),
           ),
         ),

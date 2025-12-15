@@ -5,6 +5,8 @@ import 'signup_page.dart';
 import 'screens/home_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -31,7 +33,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: Colors.green, content: Text("Login successful!")));
         Navigator.pushReplacement(
           context,
@@ -55,7 +57,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(30),
           ),
           title: Center(
             child: Text(
@@ -72,14 +74,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 TextFormField(
                   controller: resetIdController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: "Enter your university ID",
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
@@ -104,15 +106,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ),
           actions: [
             TextButton(
-              child: Text("Cancel", style: TextStyle(color: Colors.grey)),
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
               onPressed: () => Navigator.of(context).pop(),
             ),
             ElevatedButton(
-              child: Text("Send", style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: _primaryColor,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(30),
                 ),
               ),
               onPressed: () async {
@@ -121,15 +122,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     backgroundColor: _primaryColor,
-                    content: Text("Sending email..."),
-                    duration: Duration(seconds: 2),
+                    content: const Text("Sending email..."),
+                    duration: const Duration(seconds: 2),
                   ));
 
                   try {
                     await ref.read(authControllerProvider).resetPassword(
                         universityId: resetIdController.text.trim());
 
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       backgroundColor: Colors.green,
                       content: Text(
                           "Password reset instructions sent to your university email."),
@@ -142,6 +143,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   }
                 }
               },
+              child: Text("Send", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -160,7 +162,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         filled: true,
         fillColor: Colors.white,
         hintText: hint,
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
@@ -173,14 +176,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           borderRadius: BorderRadius.circular(30.0),
           borderSide: BorderSide(color: _primaryColor, width: 2),
         ),
-        errorStyle: TextStyle(fontSize: 12, color: Colors.red, height: 1.2),
+        errorStyle:
+            const TextStyle(fontSize: 12, color: Colors.red, height: 1.2),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30.0),
-          borderSide: BorderSide(color: Colors.red, width: 2),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30.0),
-          borderSide: BorderSide(color: Colors.red, width: 2),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
       ),
       validator: (value) {
@@ -201,7 +205,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           children: [
             Expanded(
               child: Center(
-                child: Container(
+                child: SizedBox(
                   height: 200,
                   width: 200,
                   child: Image.asset(
@@ -216,28 +220,29 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(30),
+              padding: const EdgeInsets.all(30),
               decoration: BoxDecoration(
                 color: _primaryColor,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    Text("Login",
+                    const Text("Login",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 28,
                             fontWeight: FontWeight.bold)),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     _buildInputField(
                       _universityIdController,
                       "University ID",
                       "Please enter university ID",
                       keyboard: TextInputType.number,
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     _buildInputField(
                       _passwordController,
                       "Password",
@@ -248,15 +253,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: _showResetPasswordDialog,
-                        child: Text(
+                        child: const Text(
                           "Forgot password?",
                           style: TextStyle(color: Colors.white70),
                         ),
                       ),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     _isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
+                        ? const CircularProgressIndicator(color: Colors.white)
                         : Center(
                             child: SizedBox(
                               width: 200,
@@ -270,18 +275,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     borderRadius: BorderRadius.circular(30),
                                   ),
                                 ),
-                                child: Text("Login",
+                                child: const Text("Login",
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                               ),
                             ),
                           ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     TextButton(
                       onPressed: () => Navigator.push(context,
                           MaterialPageRoute(builder: (_) => SignUpPage())),
-                      child: Text("New user? Click to sign up",
+                      child: const Text("New user? Click to sign up",
                           style: TextStyle(color: Colors.white)),
                     )
                   ],

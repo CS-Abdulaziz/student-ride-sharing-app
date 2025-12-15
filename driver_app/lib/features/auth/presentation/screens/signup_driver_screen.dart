@@ -10,7 +10,6 @@ class SignupDriverScreen extends StatefulWidget {
 }
 
 class _SignupDriverScreenState extends State<SignupDriverScreen> {
-
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -19,25 +18,38 @@ class _SignupDriverScreenState extends State<SignupDriverScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  String? _validateEmail(String? value) {
+  String? _validateFullName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Full Name is required';
+    }
 
+    final nameRegex =
+        RegExp(r"^[a-zA-Z\u0600-\u06FF]+(?:\s[a-zA-Z\u0600-\u06FF]+)+$");
+
+    if (!nameRegex.hasMatch(value.trim())) {
+      return 'Enter a valid full name (first and last name)';
+    }
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Email is required';
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    
+
     if (!emailRegex.hasMatch(value)) return 'Enter a valid email address';
-      return null;
-    }
+    return null;
+  }
 
-    String? _validatePhone(String? value) {
-      if (value == null || value.isEmpty) return 'Phone is required';
-      final phoneRegex = RegExp(r'^05\d{8}$');
-      if (!phoneRegex.hasMatch(value)) {
-        return 'Enter valid KSA phone (05xxxxxxxx)';
-      }
-      return null;
+  String? _validatePhone(String? value) {
+    if (value == null || value.isEmpty) return 'Phone is required';
+    final phoneRegex = RegExp(r'^05\d{8}$');
+    if (!phoneRegex.hasMatch(value)) {
+      return 'Enter valid KSA phone (05xxxxxxxx)';
     }
+    return null;
+  }
 
-    String? _validatePassword(String? value) {
+  String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is required';
     }
@@ -52,13 +64,10 @@ class _SignupDriverScreenState extends State<SignupDriverScreen> {
     return null;
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      backgroundColor: const Color(0xFF9446C2),
+      backgroundColor: const Color(0xFF6A1B9A),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -92,9 +101,8 @@ class _SignupDriverScreenState extends State<SignupDriverScreen> {
                     controller: _fullNameController,
                     label: 'Full Name',
                     icon: Icons.person,
-                    hint: 'Abdulaziz Khamis',
-                    validator: (val) =>
-                        val!.isEmpty ? 'Name is required' : null,
+                    hint: 'FirstName LastName',
+                    validator: _validateFullName,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
@@ -143,10 +151,10 @@ class _SignupDriverScreenState extends State<SignupDriverScreen> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF9446C2),
+                      foregroundColor: const Color(0xFF6A1B9A),
                       minimumSize: const Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
+                          borderRadius: BorderRadius.circular(30)),
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -214,11 +222,11 @@ class _SignupDriverScreenState extends State<SignupDriverScreen> {
             fillColor: Colors.white,
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-            prefixIcon: Icon(icon, color: const Color(0xFF9446C2), size: 22),
+            prefixIcon: Icon(icon, color: const Color(0xFF6A1B9A), size: 22),
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide.none),
             errorStyle: const TextStyle(
                 color: Colors.yellowAccent, fontWeight: FontWeight.bold),

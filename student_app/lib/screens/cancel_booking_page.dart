@@ -29,7 +29,7 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
   void _submitCancellation() async {
     if (_selectedReason == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Please select a reason first")));
+          const SnackBar(content: Text("Please select a reason first")));
       return;
     }
 
@@ -61,41 +61,41 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF6A1B9A),
+      backgroundColor: const Color(0xFF6A1B9A),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.white),
+          icon: const Icon(Icons.close, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text("Cancel Booking",
+        title: const Text("Cancel Booking",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: Column(
         children: [
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(25),
+              padding: const EdgeInsets.all(25),
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Why do you want to cancel?",
+                  const Text("Why do you want to cancel?",
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Expanded(
                     child: ListView.separated(
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       itemCount: _reasons.length,
-                      separatorBuilder: (c, i) => Divider(height: 1),
+                      separatorBuilder: (c, i) => const Divider(height: 1),
                       itemBuilder: (context, index) {
                         return RadioListTile<String>(
                             value: _reasons[index],
@@ -105,13 +105,13 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
                             title: Text(_reasons[index],
                                 style: TextStyle(
                                     color: Colors.grey[800], fontSize: 14)),
-                            activeColor: Color(0xFF6A1B9A),
+                            activeColor: const Color(0xFF6A1B9A),
                             contentPadding: EdgeInsets.zero,
                             dense: true);
                       },
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity,
                     height: 55,
@@ -123,8 +123,8 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
                             borderRadius: BorderRadius.circular(30)),
                       ),
                       child: _isSending
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text("Send",
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text("Send",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,

@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver_app/features/auth/presentation/screens/available_ride_screen.dart';
 import 'package:driver_app/features/auth/presentation/screens/current_ride_screen.dart';
 
-
 class SignupVehicleScreen extends StatefulWidget {
   final String? fullName;
   final String? email;
@@ -69,8 +68,7 @@ class _SignupVehicleScreenState extends State<SignupVehicleScreen> {
     'Green',
     'Gold'
   ];
-  final List<String> _seats =
-      List.generate(6, (index) => (index + 3).toString());
+  final List<String> _seats = ['Small', 'Medium', 'Large'];
   final List<String> _years = List.generate(
       35, (index) => (DateTime.now().year + 1 - index).toString());
 
@@ -97,7 +95,7 @@ class _SignupVehicleScreenState extends State<SignupVehicleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF9446C2),
+      backgroundColor: const Color(0xFF6A1B9A),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -182,7 +180,7 @@ class _SignupVehicleScreenState extends State<SignupVehicleScreen> {
                   ),
                   const SizedBox(height: 16),
                   const Row(
-                    children:[
+                    children: [
                       Icon(Icons.confirmation_number,
                           color: Colors.white, size: 20),
                       SizedBox(width: 8),
@@ -198,7 +196,7 @@ class _SignupVehicleScreenState extends State<SignupVehicleScreen> {
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -268,11 +266,11 @@ class _SignupVehicleScreenState extends State<SignupVehicleScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _buildDropdownField(
-                          label: 'Seats',
+                          label: 'Size',
                           icon: Icons.event_seat,
                           value: _selectedSeats,
                           items: _seats,
-                          hint: 'Count',
+                          hint: 'Size',
                           onChanged: (val) =>
                               setState(() => _selectedSeats = val),
                         ),
@@ -286,10 +284,10 @@ class _SignupVehicleScreenState extends State<SignupVehicleScreen> {
                       : ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
-                            foregroundColor: const Color(0xFF9446C2),
+                            foregroundColor: const Color(0xFF6A1B9A),
                             minimumSize: const Size(double.infinity, 56),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
+                                borderRadius: BorderRadius.circular(30)),
                           ),
                           onPressed: _registerDriver,
                           child: const Text("Register",
@@ -325,16 +323,16 @@ class _SignupVehicleScreenState extends State<SignupVehicleScreen> {
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           isExpanded: true,
-          initialValue: value,
-          icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF9446C2)),
+          value: value,
+          icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF6A1B9A)),
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
-            prefixIcon: Icon(icon, color: const Color(0xFF9446C2), size: 22),
+            prefixIcon: Icon(icon, color: const Color(0xFF6A1B9A), size: 22),
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide.none),
             errorStyle: const TextStyle(
                 color: Colors.yellowAccent, fontWeight: FontWeight.bold),
@@ -379,11 +377,11 @@ class _SignupVehicleScreenState extends State<SignupVehicleScreen> {
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey.shade300, fontSize: 13),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF9446C2), width: 1.5),
+          borderSide: BorderSide(color: Color(0xFF6A1B9A), width: 1.5),
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
       ),
@@ -436,7 +434,7 @@ class _SignupVehicleScreenState extends State<SignupVehicleScreen> {
           'vehicleYear': _selectedYear,
           'vehicleColor': _selectedColor,
           'vehicleType': _selectedType,
-          'seats': int.parse(_selectedSeats!),
+          'vehicleSize': _selectedSeats,
           'vehiclePlate': fullPlate,
         });
 

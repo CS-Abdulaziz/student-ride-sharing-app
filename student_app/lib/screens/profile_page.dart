@@ -6,21 +6,23 @@ import 'package:intl/intl.dart';
 class ProfilePage extends StatelessWidget {
   final String userId = FirebaseAuth.instance.currentUser!.uid;
 
+  const ProfilePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Ride History",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFF6A1B9A),
+        backgroundColor: const Color(0xFF6A1B9A),
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -32,10 +34,10 @@ class ProfilePage extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text("Error loading data"));
+            return const Center(child: Text("Error loading data"));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
                 child: CircularProgressIndicator(color: Color(0xFF6A1B9A)));
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -44,14 +46,15 @@ class ProfilePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.history, size: 70, color: Colors.grey[300]),
-                SizedBox(height: 10),
-                Text("No ride history", style: TextStyle(color: Colors.grey)),
+                const SizedBox(height: 10),
+                const Text("No ride history",
+                    style: TextStyle(color: Colors.grey)),
               ],
             ));
           }
 
           return ListView.builder(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
               var ride =
@@ -112,7 +115,7 @@ class ProfilePage extends StatelessWidget {
     }
 
     return Card(
-      margin: EdgeInsets.only(bottom: 15),
+      margin: const EdgeInsets.only(bottom: 15),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       elevation: 1,
       color: Colors.white,
@@ -130,15 +133,16 @@ class ProfilePage extends StatelessWidget {
                         fontSize: 13,
                         fontWeight: FontWeight.bold)),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: statusBgColor,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   child: Row(
                     children: [
                       Icon(statusIcon, size: 14, color: statusColor),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text(statusText,
                           style: TextStyle(
                               color: statusColor,
@@ -158,17 +162,17 @@ class ProfilePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildLocationRow(Icons.circle, ride['pickupAddress'],
-                          Color(0xFF6A1B9A)),
-                      SizedBox(height: 10),
+                          const Color(0xFF6A1B9A)),
+                      const SizedBox(height: 10),
                       _buildLocationRow(Icons.location_on,
                           ride['destinationAddress'], Colors.red),
                     ],
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Text(
                   ride['price'] ?? "",
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Color(0xFF6A1B9A),
                       fontSize: 18,
                       fontWeight: FontWeight.bold),
@@ -183,10 +187,10 @@ class ProfilePage extends StatelessWidget {
                     .doc(driverId)
                     .get(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) return SizedBox();
+                  if (!snapshot.hasData) return const SizedBox();
 
                   if (!snapshot.data!.exists || snapshot.data!.data() == null) {
-                    return Text("Driver information unavailable",
+                    return const Text("Driver information unavailable",
                         style: TextStyle(color: Colors.grey, fontSize: 12));
                   }
 
@@ -198,45 +202,47 @@ class ProfilePage extends StatelessWidget {
                   String plate = driver['vehiclePlate'] ?? "---";
 
                   return Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         color: Colors.grey[50],
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(30),
                         border: Border.all(color: Colors.grey[200]!)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.person,
+                            const Icon(Icons.person,
                                 size: 16, color: Color(0xFF6A1B9A)),
-                            SizedBox(width: 5),
+                            const SizedBox(width: 5),
                             Text("Driver: $driverName",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 13)),
-                            Spacer(),
-                            Icon(Icons.phone, size: 14, color: Colors.grey),
-                            SizedBox(width: 4),
+                            const Spacer(),
+                            const Icon(Icons.phone,
+                                size: 14, color: Colors.grey),
+                            const SizedBox(width: 4),
                             Text(driverPhone,
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.grey[700])),
                           ],
                         ),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Row(
                           children: [
-                            Icon(Icons.directions_car,
+                            const Icon(Icons.directions_car,
                                 size: 16, color: Colors.black54),
-                            SizedBox(width: 5),
-                            Text("$carInfo - ", style: TextStyle(fontSize: 13)),
+                            const SizedBox(width: 5),
+                            Text("$carInfo - ",
+                                style: const TextStyle(fontSize: 13)),
                             Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                   color: Colors.black12,
                                   borderRadius: BorderRadius.circular(4)),
                               child: Text(plate,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 1)),
@@ -250,9 +256,9 @@ class ProfilePage extends StatelessWidget {
               ),
             ],
             if (status == 'cancelled' || status == 'rejected') ...[
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text("Reason: ${ride['cancelReason'] ?? 'Not specified'}",
-                  style: TextStyle(color: Colors.red, fontSize: 12)),
+                  style: const TextStyle(color: Colors.red, fontSize: 12)),
             ]
           ],
         ),
@@ -268,7 +274,7 @@ class ProfilePage extends StatelessWidget {
           padding: const EdgeInsets.only(top: 2.0),
           child: Icon(icon, size: 12, color: color),
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Expanded(
           child: Text(
             text ?? "---",

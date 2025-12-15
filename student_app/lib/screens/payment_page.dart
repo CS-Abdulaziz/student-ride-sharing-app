@@ -19,7 +19,7 @@ class _PaymentPageState extends State<PaymentPage> {
   Future<void> _processPayment() async {
     setState(() => _isProcessing = true);
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     try {
       await FirebaseFirestore.instance
@@ -33,13 +33,13 @@ class _PaymentPageState extends State<PaymentPage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Payment Successful! Ride Started.")),
+          const SnackBar(content: Text("Payment Successful! Ride Started.")),
         );
         Navigator.pop(context);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error processing payment")),
+        const SnackBar(content: Text("Error processing payment")),
       );
     } finally {
       if (mounted) setState(() => _isProcessing = false);
@@ -51,10 +51,10 @@ class _PaymentPageState extends State<PaymentPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Payment", style: TextStyle(color: Colors.black)),
+        title: const Text("Payment", style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -64,42 +64,43 @@ class _PaymentPageState extends State<PaymentPage> {
             Center(
               child: Column(
                 children: [
-                  Text("Total Amount", style: TextStyle(color: Colors.grey)),
+                  const Text("Total Amount",
+                      style: TextStyle(color: Colors.grey)),
                   Text(widget.amount,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF6A1B9A))),
                 ],
               ),
             ),
-            SizedBox(height: 40),
-            Text("Select Payment Method",
+            const SizedBox(height: 40),
+            const Text("Select Payment Method",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildPaymentOption(0, "Apple Pay", Icons.apple),
             _buildPaymentOption(1, "Credit Card", Icons.credit_card),
             _buildPaymentOption(2, "Cash", Icons.money),
-            Spacer(),
+            const Spacer(),
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 onPressed: _isProcessing ? null : _processPayment,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF6A1B9A),
+                  backgroundColor: const Color(0xFF6A1B9A),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(30)),
                 ),
                 child: _isProcessing
-                    ? CircularProgressIndicator(
-                        color: const Color.fromARGB(255, 0, 0, 0))
-                    : Text(
+                    ? const CircularProgressIndicator(
+                        color: Color.fromARGB(255, 0, 0, 0))
+                    : const Text(
                         "Pay Now & Start Ride",
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 255, 255, 255)),
+                            color: Color.fromARGB(255, 255, 255, 255)),
                       ),
               ),
             ),
@@ -115,8 +116,8 @@ class _PaymentPageState extends State<PaymentPage> {
       groupValue: _selectedMethod,
       onChanged: (val) => setState(() => _selectedMethod = val as int),
       title: Text(title),
-      secondary: Icon(icon, color: Color(0xFF6A1B9A)),
-      activeColor: Color(0xFF6A1B9A),
+      secondary: Icon(icon, color: const Color(0xFF6A1B9A)),
+      activeColor: const Color(0xFF6A1B9A),
     );
   }
 }
