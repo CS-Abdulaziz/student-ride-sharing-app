@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:driver_app/features/auth/presentation/screens/current_ride_screen.dart';
-
+import 'current_ride_screen.dart';
+import 'package:driver_app/features/auth/presentation/screens/login_screen.dart';
 
 class AvailableRidesScreen extends StatefulWidget {
   const AvailableRidesScreen({super.key});
@@ -20,6 +20,7 @@ class _AvailableRidesScreenState extends State<AvailableRidesScreen> {
         'status': 'accepted',
         'driverId': currentDriverId,
       });
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -80,6 +81,23 @@ class _AvailableRidesScreenState extends State<AvailableRidesScreen> {
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),
         ),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            tooltip: "Logout",
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+
+              if (context.mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
