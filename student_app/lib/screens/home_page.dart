@@ -7,13 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// --- (1) تأكد من مسار هذه الملفات (قد تحتاج تعديل النقاط حسب مكان الملف) ---
 import '../ride_controller.dart';
-import '../auth_controller.dart'; // ضروري لتسجيل الخروج
-import '../login_page.dart'; // ضروري للعودة لصفحة الدخول
-import 'support_dialog.dart'; // ملف الدعم الفني
+import '../auth_controller.dart';
+import '../login_page.dart';
+import 'support_dialog.dart';
 
-// ملفات الشاشات الأخرى
 import 'widgets/location_selector.dart';
 import 'widgets/vehicle_selector.dart';
 import 'tracking_page.dart';
@@ -176,7 +174,6 @@ class _HomePageState extends ConsumerState<HomePage>
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            // --- رأس القائمة (بيانات الطالب) ---
             FutureBuilder<DocumentSnapshot>(
               future: currentUserId != null
                   ? FirebaseFirestore.instance
@@ -249,8 +246,6 @@ class _HomePageState extends ConsumerState<HomePage>
                 );
               },
             ),
-
-            // --- زر سجل الرحلات ---
             ListTile(
               leading: Icon(Icons.history, color: Color(0xFF6A1B9A)),
               title: Text("Ride History"),
@@ -260,8 +255,6 @@ class _HomePageState extends ConsumerState<HomePage>
                     MaterialPageRoute(builder: (context) => ProfilePage()));
               },
             ),
-
-            // --- زر الدعم الفني ---
             ListTile(
               leading: Icon(Icons.support_agent, color: Color(0xFF6A1B9A)),
               title: Text("Technical Support"),
@@ -270,28 +263,22 @@ class _HomePageState extends ConsumerState<HomePage>
                 showSupportDialog(context);
               },
             ),
-
-            Divider(), // خط فاصل جمالي
-
-            // --- زر تسجيل الخروج (الجديد) ---
+            Divider(),
             ListTile(
               leading: Icon(Icons.logout, color: Colors.red),
               title: Text("Logout",
                   style: TextStyle(
                       color: Colors.red, fontWeight: FontWeight.bold)),
               onTap: () async {
-                // إغلاق الدرج أولاً (اختياري لكن أفضل)
                 Navigator.pop(context);
 
-                // 1. طلب تسجيل الخروج من الكنترولر
                 await ref.read(authControllerProvider).signOut();
 
-                // 2. الانتقال لصفحة الدخول وحذف كل الصفحات السابقة من الذاكرة
                 if (mounted) {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => LoginPage()),
-                    (route) => false, // هذا الشرط يعني: لا تبقِ أي صفحة سابقة
+                    (route) => false,
                   );
                 }
               },

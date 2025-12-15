@@ -70,23 +70,15 @@ class _VehicleSelectorState extends State<VehicleSelector> {
                     children: [
                       Icon(Icons.directions_car_filled,
                           size: 35, color: Colors.black),
-
                       SizedBox(height: 8),
-
-                      // Name
                       Text(ride['name'],
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
-
-                      // Price
                       Text(ride['price'],
                           style: TextStyle(
                               color: Color(0xFF6A1B9A),
                               fontWeight: FontWeight.w600)),
-
                       SizedBox(height: 5),
-
-                      // Seats Info (Range)
                       Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 8, vertical: 4),
