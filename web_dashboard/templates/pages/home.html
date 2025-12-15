@@ -1,0 +1,89 @@
+{% extends "layouts/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="row g-4">
+    <div class="col-12">
+      <h1 class="h4 mb-3">{% trans "Welcome" %} 👋</h1>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="text-muted small mb-1">{% trans "Drivers" %}</div>
+              <div class="h3 mb-0">{{ drivers_count|default:0 }}</div>
+            </div>
+            <div class="icon-wrapper">
+              <i class="bi bi-people"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="text-muted small mb-1">{% trans "Users" %}</div>
+              <div class="h3 mb-0">{{ users_count|default:0 }}</div>
+            </div>
+            <div class="icon-wrapper">
+              <i class="bi bi-person-vcard"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="text-muted small mb-1">{% trans "Rides" %}</div>
+              <div class="h3 mb-0">{{ rides_count|default:0 }}</div>
+            </div>
+            <div class="icon-wrapper">
+              <i class="bi bi-car-front"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="text-muted small mb-1">{% trans "Complaints" %}</div>
+              <div class="h3 mb-0">{{ complaints_count|default:0 }}</div>
+            </div>
+            <div class="icon-wrapper">
+              <i class="bi bi-exclamation-triangle"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card stat-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="text-muted small mb-1">{% trans "Support" %}</div>
+              <div class="h3 mb-0">{{ support_count|default:0 }}</div>
+            </div>
+            <div class="icon-wrapper">
+              <i class="bi bi-life-preserver"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

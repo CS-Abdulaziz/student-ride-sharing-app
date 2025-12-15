@@ -1,0 +1,134 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/complaints.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h5 mb-0">{% trans "Complaints" %}</h2>
+  </div>
+
+  <form method="get" class="p-3 border rounded mb-3">
+    <div class="row g-2">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control" name="search" placeholder="{% trans 'Search by Name, Phone, or ID...' %}" value="{{ request.GET.search }}">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-sort-down-alt"></i></span>
+          <select class="form-select" name="sort">
+            <option value="newest" {% if request.GET.sort != 'oldest' %}selected{% endif %}>{% trans "Newest First" %}</option>
+            <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>{% trans "Oldest First" %}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary w-100" type="submit">{% trans "Search" %}</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="row g-3">
+    {% for complaint in complaints %}
+      <div class="col-12 col-md-6 col-xl-4">
+        <div class="card complaint-card">
+          <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div class="small text-body-secondary">
+                {% trans "Trip ID" %}: <span class="fw-semibold">{{ complaint.rideId|default:"-" }}</span>
+              </div>
+              {% with s=complaint.status|default:""|lower %}
+                <span class="badge
+                  {% if s == 'pending' %} bg-warning text-body
+                  {% elif s == 'in_progress' %} bg-info text-body
+                  {% elif s == 'completed' or s == 'resolved' %} bg-success
+                  {% else %} bg-secondary
+                  {% endif %}">
+                  {{ complaint.status|default:"-" }}
+                </span>
+              {% endwith %}
+            </div>
+            <p class="card-text text-body-secondary mb-3">{{ complaint.complaintText|default:_("Complaint") }}</p>
+            <div class="d-flex justify-content-end">
+              <button
+                class="btn btn-sm btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#complaintModal-{{ complaint.id }}"
+              >
+                {% trans "View & Manage" %}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manage Modal -->
+      <div class="modal fade" id="complaintModal-{{ complaint.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content bg-body text-body">
+            <div class="modal-header">
+              <h5 class="modal-title">{% trans "Complaint Details" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="small text-body-secondary mb-1">{% trans "Complaint Text" %}</div>
+                  <div class="text-break">{{ complaint.complaintText|default:"-" }}</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="small text-body-secondary mb-1">{% trans "Trip ID" %}</div>
+                  <div class="text-break">{{ complaint.rideId|default:"-" }}</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="small text-body-secondary mb-1">{% trans "Driver ID" %}</div>
+                  <div class="text-break">{{ complaint.driverId|default:"-" }}</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="small text-body-secondary mb-1">{% trans "Passenger ID" %}</div>
+                  <div class="text-break">{{ complaint.passengerId|default:"-" }}</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="small text-body-secondary mb-1">{% trans "Date" %}</div>
+                  <div class="text-nowrap">{{ complaint.createdAt|default:""|date:"Y-m-d H:i" }}</div>
+                </div>
+              </div>
+
+              <hr class="my-4">
+              <h6 class="mb-3">{% trans "Update Status" %}</h6>
+              <form id="updateForm{{ complaint.id }}" method="post" action="{% url 'update_complaint_status' complaint.id %}">
+                {% csrf_token %}
+                <div class="row g-3 align-items-end">
+                  <div class="col-sm-6 col-md-4">
+                    <label for="status-{{ complaint.id }}" class="form-label">{% trans "Status" %}</label>
+                    <select id="status-{{ complaint.id }}" name="status" class="form-select">
+                      <option value="pending" {% if complaint.status == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                      <option value="in_progress" {% if complaint.status == 'in_progress' %}selected{% endif %}>{% trans "In Progress" %}</option>
+                      <option value="completed" {% if complaint.status == 'completed' or complaint.status == 'resolved' %}selected{% endif %}>{% trans "Resolved" %}</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+              <button type="submit" class="btn btn-primary" form="updateForm{{ complaint.id }}">{% trans "Save Changes" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="text-center text-body-secondary py-5">{% trans "No complaints yet" %}</div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

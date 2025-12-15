@@ -1,0 +1,231 @@
+{% extends "layouts/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h5 mb-0">{% trans "Rides" %}</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-body p-0">
+      <form method="get" class="p-3 border-bottom">
+        <div class="row g-2">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input type="text" class="form-control" name="search" placeholder="{% trans 'Search by Name, Phone, or ID...' %}" value="{{ request.GET.search }}">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-sort-down-alt"></i></span>
+              <select class="form-select" name="sort">
+                <option value="newest" {% if request.GET.sort != 'oldest' %}selected{% endif %}>{% trans "Newest First" %}</option>
+                <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>{% trans "Oldest First" %}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="submit">{% trans "Search" %}</button>
+          </div>
+        </div>
+      </form>
+      <div class="table-wrapper table-responsive">
+        <table class="table table-striped table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th class="text-nowrap">{% trans "ID" %}</th>
+              <th class="text-nowrap">{% trans "Date" %}</th>
+              <th>{% trans "Status" %}</th>
+              <th>{% trans "Passenger" %}</th>
+              <th>{% trans "Driver" %}</th>
+              <th>{% trans "Pickup" %}</th>
+              <th>{% trans "Dropoff" %}</th>
+              <th>{% trans "Price" %}</th>
+              <th class="text-center">{% trans "Actions" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ride in rides %}
+              <tr>
+                <!-- ID (first 8 chars) -->
+                <td class="text-body text-nowrap">
+                  {% if ride.id %}{{ ride.id|slice:":8" }}…{% else %}-{% endif %}
+                </td>
+                <!-- Date -->
+                <td class="text-nowrap">
+                  {{ ride.createdAt|default:""|date:"Y-m-d H:i" }}
+                </td>
+                <!-- Status with badge -->
+                <td>
+                  {% with s=ride.status|default:""|lower %}
+                    <span class="badge {% if s == 'completed' %}bg-success{% elif s == 'cancelled' or s == 'canceled' %}bg-danger{% else %}bg-secondary{% endif %}">
+                      {{ ride.status|default:"-" }}
+                    </span>
+                  {% endwith %}
+                </td>
+                <!-- Passenger name -->
+                <td>
+                  {{ ride.passengerName|default:"-" }}
+                </td>
+                <!-- Driver name -->
+                <td>
+                  {{ ride.driverName|default:"-" }}
+                </td>
+                <!-- Pickup (truncated) -->
+                <td>
+                  <span class="d-inline-block text-truncate cell-location" title="{{ ride.pickupAddress }}">
+                    {{ ride.pickupAddress|default:"-" }}
+                  </span>
+                </td>
+                <!-- Dropoff (truncated) -->
+                <td>
+                  <span class="d-inline-block text-truncate cell-location" title="{{ ride.destinationAddress }}">
+                    {{ ride.destinationAddress|default:"-" }}
+                  </span>
+                </td>
+                <!-- Price -->
+                <td>
+                  {{ ride.price|default:"-" }}
+                </td>
+                <!-- Actions -->
+                <td class="text-center">
+                  {% if ride.id %}
+                  <button
+                    type="button"
+                    class="btn btn-info btn-sm text-white me-1"
+                    data-bs-toggle="modal"
+                    data-bs-target="#rideDetailsModal"
+                    data-id="{{ ride.id }}"
+                    data-status="{{ ride.status|default:'-' }}"
+                    data-created="{{ ride.createdAt|default:''|date:'Y-m-d H:i:s' }}"
+                    data-driver="{{ ride.driverId|default:_('No Driver') }}"
+                    data-user="{{ ride.userId|default:ride.passengerId|default:'-' }}"
+                    data-drivername="{{ ride.driverName|default:_('Not Assigned') }}"
+                    data-username="{{ ride.passengerName|default:_('Not Assigned') }}"
+                    data-pickup="{{ ride.pickupAddress|default:'-' }}"
+                    data-dropoff="{{ ride.destinationAddress|default:'-' }}"
+                    data-picklat="{{ ride.pickupLat|default:'-' }}"
+                    data-picklng="{{ ride.pickupLng|default:'-' }}"
+                    data-destlat="{{ ride.destinationLat|default:'-' }}"
+                    data-destlng="{{ ride.destinationLng|default:'-' }}"
+                    data-cancelreason="{{ ride.cancelReason|default:'-' }}"
+                    data-price="{{ ride.price|default:'-' }}"
+                  >
+                    {% trans "View Details" %}
+                  </button>
+                  {% else %}
+                  <span class="text-body-secondary">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="7" class="text-center text-body-secondary py-4">{% trans "No data to display" %}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Details Modal -->
+  <div class="modal fade" id="rideDetailsModal" tabindex="-1" aria-labelledby="rideDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content bg-body text-body">
+        <div class="modal-header">
+          <h5 class="modal-title" id="rideDetailsModalLabel">{% trans "Ride Details" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <tbody>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Full ID" %}</th>
+                  <td class="text-break" id="md-fullid">-</td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Driver Name" %}</th>
+                  <td class="text-break"><span id="md-driver-name">-</span> <span class="text-body-secondary small">(<span id="md-driver">-</span>)</span></td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Passenger Name" %}</th>
+                  <td class="text-break"><span id="md-user-name">-</span> <span class="text-body-secondary small">(<span id="md-user">-</span>)</span></td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Status" %}</th>
+                  <td id="md-status">-</td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Created" %}</th>
+                  <td class="text-nowrap" id="md-created">-</td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Pickup" %}</th>
+                  <td class="text-break" id="md-pickup">-</td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Pickup Lat/Lng" %}</th>
+                  <td id="md-pickcoords">-</td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Dropoff" %}</th>
+                  <td class="text-break" id="md-dropoff">-</td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Dropoff Lat/Lng" %}</th>
+                  <td id="md-dropcoords">-</td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Price" %}</th>
+                  <td id="md-price">-</td>
+                </tr>
+                <tr>
+                  <th class="text-body-secondary">{% trans "Cancel Reason" %}</th>
+                  <td class="text-break" id="md-cancel">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function() {
+    var modalEl = document.getElementById('rideDetailsModal');
+    if (!modalEl) return;
+    modalEl.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      if (!button) return;
+      var d = button.dataset;
+      // Fill fields
+      document.getElementById('md-fullid').textContent = d.id || '-';
+      document.getElementById('md-driver').textContent = d.driver || '-';
+      document.getElementById('md-user').textContent = d.user || '-';
+      document.getElementById('md-driver-name').textContent = d.drivername || '-';
+      document.getElementById('md-user-name').textContent = d.username || '-';
+      document.getElementById('md-status').textContent = d.status || '-';
+      document.getElementById('md-created').textContent = d.created || '-';
+      document.getElementById('md-pickup').textContent = d.pickup || '-';
+      document.getElementById('md-dropoff').textContent = d.dropoff || '-';
+      document.getElementById('md-price').textContent = d.price || '-';
+      var pickCoords = (d.picklat && d.picklng) ? (d.picklat + ', ' + d.picklng) : '-';
+      var dropCoords = (d.destlat && d.destlng) ? (d.destlat + ', ' + d.destlng) : '-';
+      document.getElementById('md-pickcoords').textContent = pickCoords;
+      document.getElementById('md-dropcoords').textContent = dropCoords;
+      document.getElementById('md-cancel').textContent = d.cancelreason || '-';
+    });
+  })();
+</script>
+{% endblock %}

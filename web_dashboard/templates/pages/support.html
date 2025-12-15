@@ -1,0 +1,153 @@
+{% extends "layouts/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h5 mb-0">{% trans "Support Tickets" %}</h2>
+  </div>
+  <div class="card">
+    <div class="card-body p-0">
+      <form method="get" class="p-3 border-bottom">
+        <div class="row g-2">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input type="text" class="form-control" name="search" placeholder="{% trans 'Search by Name, Phone, or ID...' %}" value="{{ request.GET.search }}">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-sort-down-alt"></i></span>
+              <select class="form-select" name="sort">
+                <option value="newest" {% if request.GET.sort != 'oldest' %}selected{% endif %}>{% trans "Newest First" %}</option>
+                <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>{% trans "Oldest First" %}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="submit">{% trans "Search" %}</button>
+          </div>
+        </div>
+      </form>
+      <div class="table-wrapper table-responsive">
+        <table class="table table-striped table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>{% trans "Name" %}</th>
+              <th>{% trans "Phone" %}</th>
+              <th>{% trans "University ID" %}</th>
+              <th>{% trans "Message" %}</th>
+              <th>{% trans "Status" %}</th>
+              <th class="text-center">{% trans "Actions" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in tickets %}
+              <tr>
+                <td>{{ t.name }}</td>
+                <td>{{ t.phone }}</td>
+                <td>{{ t.universityId }}</td>
+                <td class="message-column text-truncate" title="{{ t.message }}">{{ t.message }}</td>
+                <td>
+                  {% with s=t.status|default:""|lower %}
+                    <span class="badge
+                      {% if s == 'new' %} bg-warning text-body
+                      {% elif s == 'in_progress' %} bg-info text-body
+                      {% elif s == 'resolved' %} bg-success
+                      {% else %} bg-secondary
+                      {% endif %}">
+                      {{ t.status|default:"-" }}
+                    </span>
+                  {% endwith %}
+                </td>
+                <td class="text-center">
+                  {% if t.id %}
+                  <button
+                    type="button"
+                    class="btn btn-info btn-sm text-white me-1"
+                    data-bs-toggle="modal"
+                    data-bs-target="#supportModal-{{ t.id }}"
+                    aria-label="View"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  {% else %}
+                  <span class="text-body-secondary">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">{% trans "No tickets available" %}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  {% for t in tickets %}
+    {% if t.id %}
+    <div class="modal fade" id="supportModal-{{ t.id }}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content bg-body text-body">
+          <div class="modal-header">
+            <h5 class="modal-title">{% trans "Support Ticket" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="small text-body-secondary mb-1">{% trans "Name" %}</div>
+                <div class="text-break">{{ t.name|default:"-" }}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="small text-body-secondary mb-1">{% trans "Phone" %}</div>
+                <div class="text-break">{{ t.phone|default:"-" }}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="small text-body-secondary mb-1">{% trans "University ID" %}</div>
+                <div class="text-break">{{ t.universityId|default:"-" }}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="small text-body-secondary mb-1">{% trans "Status" %}</div>
+                <div>{{ t.status|default:"-" }}</div>
+              </div>
+              <div class="col-12">
+                <div class="small text-body-secondary mb-1">{% trans "Message" %}</div>
+                <div class="text-break">{{ t.message|default:"-" }}</div>
+              </div>
+            </div>
+
+            <hr class="my-4">
+            <h6 class="mb-3">{% trans "Update Status" %}</h6>
+            <form id="supportForm{{ t.id }}" method="post" action="{% url 'update_support_status' t.id %}">
+              {% csrf_token %}
+              <div class="row g-3 align-items-end">
+                <div class="col-sm-6 col-md-4">
+                  <label for="support-status-{{ t.id }}" class="form-label">{% trans "Status" %}</label>
+                  <select id="support-status-{{ t.id }}" name="status" class="form-select">
+                    <option value="new" {% if t.status == 'new' %}selected{% endif %}>{% trans "New" %}</option>
+                    <option value="in_progress" {% if t.status == 'in_progress' %}selected{% endif %}>{% trans "In Progress" %}</option>
+                    <option value="resolved" {% if t.status == 'resolved' %}selected{% endif %}>{% trans "Resolved" %}</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            <button type="submit" class="btn btn-primary" form="supportForm{{ t.id }}">{% trans "Update Status" %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}
+
+

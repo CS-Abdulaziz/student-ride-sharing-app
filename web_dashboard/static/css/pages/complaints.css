@@ -1,0 +1,15 @@
+.complaint-card {
+  border-width: 2px;
+}
+.complaint-card.border-danger {
+  box-shadow: 0 0 0 .15rem rgba(220, 53, 69, .15);
+}
+.complaint-card .card-title {
+  color: #212529;
+}
+.complaint-card .card-text {
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+
