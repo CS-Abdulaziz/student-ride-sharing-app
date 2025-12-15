@@ -18,6 +18,8 @@ import 'tracking_page.dart';
 import 'profile_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -30,9 +32,9 @@ class _HomePageState extends ConsumerState<HomePage>
   String _pickupLocation = "Locating...";
   String _destinationLocation = "Choose Destination";
 
-  LatLng _pickupLatLng = LatLng(24.7136, 46.6753);
+  LatLng _pickupLatLng = const LatLng(24.7136, 46.6753);
   LatLng? _destinationLatLng;
-  LatLng _mapCenter = LatLng(24.7136, 46.6753);
+  LatLng _mapCenter = const LatLng(24.7136, 46.6753);
 
   bool _isEditingPickup = true;
   bool _isSelectingRide = false;
@@ -82,10 +84,11 @@ class _HomePageState extends ConsumerState<HomePage>
         final data = json.decode(response.body);
         String address = data['display_name'].split(',')[0];
         setState(() {
-          if (_isEditingPickup)
+          if (_isEditingPickup) {
             _pickupLocation = address;
-          else
+          } else {
             _destinationLocation = address;
+          }
         });
       }
     } catch (e) {
@@ -101,7 +104,7 @@ class _HomePageState extends ConsumerState<HomePage>
         context: context,
         barrierDismissible: false,
         builder: (c) =>
-            Center(child: CircularProgressIndicator(color: Color(0xFF6A1B9A))));
+            const Center(child: CircularProgressIndicator(color: Color(0xFF6A1B9A))));
 
     try {
       final url = Uri.parse(
@@ -128,7 +131,7 @@ class _HomePageState extends ConsumerState<HomePage>
           });
         } else {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Location not found")));
+              .showSnackBar(const SnackBar(content: Text("Location not found")));
         }
       }
     } catch (e) {
@@ -145,10 +148,10 @@ class _HomePageState extends ConsumerState<HomePage>
             _isEditingPickup ? "Search Pickup Point" : "Search Destination"),
         content: TextField(
             controller: searchCtrl,
-            decoration: InputDecoration(hintText: "Type location name...")),
+            decoration: const InputDecoration(hintText: "Type location name...")),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+              onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
@@ -156,8 +159,8 @@ class _HomePageState extends ConsumerState<HomePage>
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor:
-                    _isEditingPickup ? Color(0xFF6A1B9A) : Colors.red),
-            child: Text("Search", style: TextStyle(color: Colors.white)),
+                    _isEditingPickup ? const Color(0xFF6A1B9A) : Colors.red),
+            child: const Text("Search", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -201,7 +204,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       bottom: 30,
                       left: 20,
                       right: 20),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xFF6A1B9A),
                   ),
                   child: Row(
@@ -213,30 +216,30 @@ class _HomePageState extends ConsumerState<HomePage>
                           displayName.isNotEmpty
                               ? displayName[0].toUpperCase()
                               : "U",
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF6A1B9A)),
                         ),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(displayName,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white)),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text("ID: $universityId",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.white70, fontSize: 14)),
                             if (phone.isNotEmpty)
                               Text("Phone: $phone",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.white70, fontSize: 14)),
                           ],
                         ),
@@ -247,8 +250,8 @@ class _HomePageState extends ConsumerState<HomePage>
               },
             ),
             ListTile(
-              leading: Icon(Icons.history, color: Color(0xFF6A1B9A)),
-              title: Text("Ride History"),
+              leading: const Icon(Icons.history, color: Color(0xFF6A1B9A)),
+              title: const Text("Ride History"),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context,
@@ -314,7 +317,7 @@ class _HomePageState extends ConsumerState<HomePage>
                         padding: const EdgeInsets.only(bottom: 40.0),
                         child: Icon(Icons.location_pin,
                             color: _isEditingPickup
-                                ? Color(0xFF6A1B9A)
+                                ? const Color(0xFF6A1B9A)
                                 : Colors.red,
                             size: 50))),
                 Center(
@@ -335,7 +338,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 children: [
                   InkWell(
                     onTap: () => _scaffoldKey.currentState?.openDrawer(),
-                    child: CircleAvatar(
+                    child: const CircleAvatar(
                         backgroundColor: Colors.white,
                         child: Icon(Icons.menu, color: Colors.black)),
                   ),
@@ -348,9 +351,9 @@ class _HomePageState extends ConsumerState<HomePage>
             left: 0,
             right: 0,
             child: AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
+              duration: const Duration(milliseconds: 300),
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
                 boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)],
@@ -365,7 +368,7 @@ class _HomePageState extends ConsumerState<HomePage>
                         showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder: (c) => Center(
+                            builder: (c) => const Center(
                                 child: CircularProgressIndicator(
                                     color: Color(0xFF6A1B9A))));
 
@@ -382,7 +385,7 @@ class _HomePageState extends ConsumerState<HomePage>
                                 price: selectedCar['price'],
                               );
                           Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text("Request sent successfully!"),
                             backgroundColor: Colors.green,
                           ));
@@ -414,14 +417,15 @@ class _HomePageState extends ConsumerState<HomePage>
                       }),
                       onDestinationTap: () => setState(() {
                         _isEditingPickup = false;
-                        if (_destinationLatLng != null)
+                        if (_destinationLatLng != null) {
                           _mapController.move(_destinationLatLng!, 15.0);
+                        }
                       }),
                       onSearchTap: _showSearchDialog,
                       onConfirmTap: () {
                         if (_destinationLatLng == null ||
                             _destinationLocation == "Choose Destination") {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content:
                                   Text("Please select destination first")));
                           return;

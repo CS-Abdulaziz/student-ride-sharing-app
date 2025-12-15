@@ -19,21 +19,14 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
     String nextStatus = '';
     currentStatus = currentStatus.trim();
 
-    // 1. منطق زر الوصول: ينتقل مباشرة من Accepted/Pending إلى Arrived
     if (currentStatus == 'pending' || currentStatus == 'accepted') {
       nextStatus = 'arrived';
-    }
-    // 2. منطق زر الإكمال:
-    // - إذا كانت الحالة in_progress (يعني الطالب دفع بالمحفظة) -> إنهاء
-    // - إذا كانت الحالة arrived والدفع كاش (يعني السائق يقبض بيده) -> إنهاء
-    // - إذا كانت الحالة started (احتياط) -> إنهاء
-    else if (currentStatus == 'in_progress' ||
+    } else if (currentStatus == 'in_progress' ||
         currentStatus == 'started' ||
         (currentStatus == 'arrived' && paymentMethod == 'Cash')) {
       nextStatus = 'completed';
     }
 
-    // --- سيناريو الدفع الكاش عند الإنهاء ---
     if (nextStatus == 'completed' &&
         paymentMethod == 'Cash' &&
         paymentStatus != 'paid') {
@@ -61,7 +54,6 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
 
       if (confirm != true) return;
 
-      // تحديث الحالة إلى مدفوع ومنتهية
       await FirebaseFirestore.instance
           .collection('rides')
           .doc(widget.rideId)
@@ -71,11 +63,10 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
         'completedAt': FieldValue.serverTimestamp(),
       });
 
-      if (mounted) Navigator.pop(context); // الخروج
+      if (mounted) Navigator.pop(context);
       return;
     }
 
-    // --- التحديث الطبيعي لبقية الحالات ---
     if (nextStatus.isNotEmpty) {
       await FirebaseFirestore.instance
           .collection('rides')
@@ -92,11 +83,9 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
     }
   }
 
-  // --- بناء الواجهة (UI) ---
-
   @override
   Widget build(BuildContext context) {
-    const Color mainPurpleColor = Color(0xFF9446C2);
+    const Color mainPurpleColor = Color(0xFF6A1B9A);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -140,10 +129,10 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
           String price = rideData['price'] ?? '0';
           String paymentStatus = rideData['paymentStatus'] ?? 'unpaid';
           String paymentMethod = rideData['PaymentMethod'] ?? 'Cash';
+          String passengerId = rideData['passengerId'] ?? '';
 
           bool isPaid = (paymentStatus == 'paid');
 
-          // --- تحديد حالة الزر والنصوص (الجزئية المهمة) ---
           String btnText = "Loading...";
           Color btnColor = Colors.grey;
           bool isButtonEnabled = true;
@@ -153,17 +142,14 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
             btnColor = mainPurpleColor;
           } else if (status == 'arrived') {
             if (paymentMethod == 'Cash') {
-              // إذا كاش، الزر متاح للإنهاء
               btnText = "Complete Trip";
               btnColor = Colors.green;
             } else {
-              // إذا محفظة، ننتظر الدفع
               btnText = "Waiting for Payment...";
               btnColor = Colors.grey;
               isButtonEnabled = false;
             }
           } else if (status == 'in_progress' || status == 'started') {
-            // حل مشكلة الزر الأصفر: إذا دفع الطالب وتغيرت الحالة
             btnText = "Complete Trip";
             btnColor = Colors.green;
           } else if (status == 'completed') {
@@ -195,7 +181,7 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
                     left: 20,
                     right: 20,
                     bottom: -50,
-                    child: _buildPassengerCard(),
+                    child: _buildPassengerCard(passengerId),
                   ),
                 ],
               ),
@@ -214,7 +200,7 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(
                                 color: Colors.grey.withOpacity(0.1),
@@ -250,7 +236,7 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(30),
                           border: Border.all(color: Colors.grey.shade200),
                           boxShadow: [
                             BoxShadow(
@@ -268,11 +254,13 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
                                 Row(
                                   children: [
                                     Icon(
-                                        paymentMethod == 'Wallet'
-                                            ? Icons.account_balance_wallet
-                                            : Icons.money,
-                                        color: mainPurpleColor,
-                                        size: 20),
+                                      (paymentMethod == 'Online' ||
+                                              paymentMethod == 'Wallet')
+                                          ? Icons.credit_card
+                                          : Icons.money,
+                                      color: mainPurpleColor,
+                                      size: 20,
+                                    ),
                                     const SizedBox(width: 8),
                                     Text(paymentMethod,
                                         style: const TextStyle(
@@ -358,7 +346,7 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: btnColor,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
+                            borderRadius: BorderRadius.circular(30)),
                       ),
                       child: Text(
                         btnText,
@@ -378,15 +366,13 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
     );
   }
 
-  // --- Widgets مساعدة (لم تتغير) ---
-
-  Widget _buildPassengerCard() {
+  Widget _buildPassengerCard(String passengerId) {
     return Container(
       height: 100,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -402,16 +388,38 @@ class _CurrentRideScreenState extends State<CurrentRideScreen> {
             child: const Icon(Icons.person, size: 35, color: Colors.grey),
           ),
           const SizedBox(width: 15),
-          const Expanded(
+          Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Student Passenger",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                SizedBox(height: 4),
-                Row(
+                FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(passengerId)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text("Loading...",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold));
+                    }
+                    String passengerName = "Student Passenger";
+                    if (snapshot.hasData &&
+                        snapshot.data != null &&
+                        snapshot.data!.exists) {
+                      final data =
+                          snapshot.data!.data() as Map<String, dynamic>;
+                      passengerName =
+                          data['fullName'] ?? data['name'] ?? "Student";
+                    }
+                    return Text(passengerName,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold));
+                  },
+                ),
+                const SizedBox(height: 4),
+                const Row(
                   children: [
                     Icon(Icons.star, color: Colors.amber, size: 18),
                     Text("4.8",

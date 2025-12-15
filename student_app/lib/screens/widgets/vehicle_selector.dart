@@ -31,12 +31,13 @@ class _VehicleSelectorState extends State<VehicleSelector> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Select Vehicle Size",
+            const Text("Select Vehicle Size",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            IconButton(icon: Icon(Icons.close), onPressed: widget.onClose),
+            IconButton(
+                icon: const Icon(Icons.close), onPressed: widget.onClose),
           ],
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
 
         SizedBox(
           height: 150,
@@ -54,34 +55,36 @@ class _VehicleSelectorState extends State<VehicleSelector> {
                 },
                 child: Container(
                   width: 130,
-                  margin: EdgeInsets.only(right: 12),
-                  padding: EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(right: 12),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: selected
-                        ? Color(0xFF6A1B9A).withOpacity(0.05)
+                        ? const Color(0xFF6A1B9A).withOpacity(0.05)
                         : Colors.white,
                     border: Border.all(
-                        color: selected ? Color(0xFF6A1B9A) : Colors.grey[300]!,
+                        color: selected
+                            ? const Color(0xFF6A1B9A)
+                            : Colors.grey[300]!,
                         width: 2),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.directions_car_filled,
+                      const Icon(Icons.directions_car_filled,
                           size: 35, color: Colors.black),
                       SizedBox(height: 8),
                       Text(ride['name'],
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
                       Text(ride['price'],
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Color(0xFF6A1B9A),
                               fontWeight: FontWeight.w600)),
                       SizedBox(height: 5),
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(8),
@@ -91,7 +94,7 @@ class _VehicleSelectorState extends State<VehicleSelector> {
                           children: [
                             Icon(Icons.person,
                                 size: 14, color: Colors.grey[600]),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Text(ride['seats'],
                                 style: TextStyle(
                                     fontSize: 12,
@@ -107,7 +110,7 @@ class _VehicleSelectorState extends State<VehicleSelector> {
             },
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
 
         SizedBox(
           width: double.infinity,
@@ -115,8 +118,8 @@ class _VehicleSelectorState extends State<VehicleSelector> {
           child: ElevatedButton(
             onPressed: widget.onConfirm,
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black, shape: StadiumBorder()),
-            child: Text("Confirm Booking",
+                backgroundColor: Colors.black, shape: const StadiumBorder()),
+            child: const Text("Confirm Booking",
                 style: TextStyle(color: Colors.white, fontSize: 16)),
           ),
         ),

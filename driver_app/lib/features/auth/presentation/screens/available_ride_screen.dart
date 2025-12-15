@@ -12,13 +12,78 @@ class AvailableRidesScreen extends StatefulWidget {
 }
 
 class _AvailableRidesScreenState extends State<AvailableRidesScreen> {
-  Future<void> _acceptRide(String rideId) async {
+  @override
+  void initState() {
+    super.initState();
+    _checkActiveRide();
+  }
+
+  String _normalizeText(String? value) {
+    if (value == null) return 'small';
+    return value.trim().toLowerCase();
+  }
+
+
+  List<String> _generateCarTypeVariants(String driverVehicleSize) {
+    final normalized = _normalizeText(driverVehicleSize);
+    return [
+      normalized, // small
+      normalized.toUpperCase(), // SMALL
+      normalized[0].toUpperCase() + normalized.substring(1), // Small
+    ];
+  }
+
+  Future<void> _checkActiveRide() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final activeRideQuery = await FirebaseFirestore.instance
+        .collection('rides')
+        .where('driverId', isEqualTo: user.uid)
+        .where('status', whereIn: [
+      'accepted',
+      'arrived',
+      'started',
+      'in_progressed'
+    ]).limit(1).get();
+
+    if (activeRideQuery.docs.isNotEmpty && mounted) {
+      final rideId = activeRideQuery.docs.first.id;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CurrentRideScreen(rideId: rideId),
+        ),
+      );
+    }
+  }
+
+  Future<void> _acceptRide(String rideId, String requiredCarType) async {
     try {
-      final String currentDriverId = FirebaseAuth.instance.currentUser!.uid;
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
+      final driverDoc = await FirebaseFirestore.instance
+          .collection('drivers')
+          .doc(user.uid)
+          .get();
+      
+      final String driverVehicleSize = driverDoc.data()?['vehicleSize'] ?? 'Small';
+
+      if (_normalizeText(driverVehicleSize) != _normalizeText(requiredCarType)) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Mismatch! Your car is $driverVehicleSize but ride needs $requiredCarType"),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
 
       await FirebaseFirestore.instance.collection('rides').doc(rideId).update({
         'status': 'accepted',
-        'driverId': currentDriverId,
+        'driverId': user.uid,
       });
 
       if (mounted) {
@@ -66,9 +131,17 @@ class _AvailableRidesScreenState extends State<AvailableRidesScreen> {
     }
   }
 
+  Future<DocumentSnapshot> _getDriverData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    return await FirebaseFirestore.instance
+        .collection('drivers')
+        .doc(user!.uid)
+        .get();
+  }
+
   @override
   Widget build(BuildContext context) {
-    const Color mainPurpleColor = Color(0xFF9446C2);
+    const Color mainPurpleColor = Color(0xFF6A1B9A);
 
     return Scaffold(
       backgroundColor: mainPurpleColor,
@@ -88,7 +161,6 @@ class _AvailableRidesScreenState extends State<AvailableRidesScreen> {
             tooltip: "Logout",
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
-
               if (context.mounted) {
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -99,129 +171,160 @@ class _AvailableRidesScreenState extends State<AvailableRidesScreen> {
           ),
         ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('rides')
-            .where('status', isEqualTo: 'pending')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: FutureBuilder<DocumentSnapshot>(
+        future: _getDriverData(),
+        builder: (context, driverSnapshot) {
+          if (driverSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(
                 child: CircularProgressIndicator(color: Colors.white));
           }
-          if (snapshot.hasError) {
-            return Center(
-                child: Text("Error: ${snapshot.error}",
-                    style: const TextStyle(color: Colors.white)));
-          }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.directions_car_outlined,
-                      size: 80, color: Colors.white.withOpacity(0.5)),
-                  const SizedBox(height: 16),
-                  Text(
-                    "No rides available yet",
-                    style: TextStyle(
-                        fontSize: 18, color: Colors.white.withOpacity(0.9)),
-                  ),
-                ],
-              ),
-            );
+          if (driverSnapshot.hasError || !driverSnapshot.hasData) {
+            return const Center(
+                child: Text("Error loading driver data",
+                    style: TextStyle(color: Colors.white)));
           }
 
-          final rides = snapshot.data!.docs;
+          final driverData = driverSnapshot.data!.data() as Map<String, dynamic>;
+          
+          final String driverVehicleSize = driverData['vehicleSize'] ?? 'Small';
+          final List<String> carTypeVariants = _generateCarTypeVariants(driverVehicleSize);
 
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            itemCount: rides.length,
-            itemBuilder: (context, index) {
-              var rideData = rides[index].data() as Map<String, dynamic>;
-              String rideId = rides[index].id;
-
-              return Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5)),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+          return StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('rides')
+                .where('status', isEqualTo: 'pending')
+                .where('carType', whereIn: carTypeVariants)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                    child: CircularProgressIndicator(color: Colors.white));
+              }
+              if (snapshot.hasError) {
+                return Center(
+                    child: Text("Error: ${snapshot.error}",
+                        style: const TextStyle(color: Colors.white)));
+              }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: mainPurpleColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Text(
-                              "${rideData['price'] ?? '--'} SAR",
-                              style: const TextStyle(
-                                color: mainPurpleColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () => _rejectRide(rideId),
-                            icon: const Icon(Icons.cancel,
-                                color: Colors.redAccent, size: 28),
-                            tooltip: "Reject Ride",
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      _buildLocationRow(
-                        icon: Icons.my_location,
-                        iconColor: mainPurpleColor,
-                        title: "Pickup Location",
-                        address: rideData['pickupAddress'] ?? "Unknown",
-                        isLast: false,
-                      ),
-                      _buildLocationRow(
-                        icon: Icons.location_on,
-                        iconColor: Colors.redAccent,
-                        title: "Drop-off Location",
-                        address: rideData['destinationAddress'] ?? "Unknown",
-                        isLast: true,
-                      ),
-                      const SizedBox(height: 24),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 54,
-                        child: ElevatedButton(
-                          onPressed: () => _acceptRide(rideId),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: mainPurpleColor,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
-                          ),
-                          child: const Text(
-                            "Accept Ride",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                      Icon(Icons.directions_car_outlined,
+                          size: 80, color: Colors.white.withOpacity(0.5)),
+                      const SizedBox(height: 16),
+                      Text(
+                        
+                        "No rides for your ($driverVehicleSize) car",
+                        style: TextStyle(
+                            fontSize: 18, color: Colors.white.withOpacity(0.9)),
                       ),
                     ],
                   ),
-                ),
+                );
+              }
+
+              final rides = snapshot.data!.docs;
+
+              return ListView.builder(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                itemCount: rides.length,
+                itemBuilder: (context, index) {
+                  var rideData = rides[index].data() as Map<String, dynamic>;
+                  String rideId = rides[index].id;
+                  String requestedCarType = rideData['carType'] ?? '';
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5)),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: mainPurpleColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Text(
+                                  "${rideData['price'] ?? '--'} SAR",
+                                  style: const TextStyle(
+                                    color: mainPurpleColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                rideData['carType'] ?? '',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey),
+                              ),
+                              IconButton(
+                                onPressed: () => _rejectRide(rideId),
+                                icon: const Icon(Icons.cancel,
+                                    color: Colors.redAccent, size: 28),
+                                tooltip: "Reject Ride",
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          _buildLocationRow(
+                            icon: Icons.my_location,
+                            iconColor: mainPurpleColor,
+                            title: "Pickup Location",
+                            address: rideData['pickupAddress'] ?? "Unknown",
+                            isLast: false,
+                          ),
+                          _buildLocationRow(
+                            icon: Icons.location_on,
+                            iconColor: Colors.redAccent,
+                            title: "Drop-off Location",
+                            address:
+                                rideData['destinationAddress'] ?? "Unknown",
+                            isLast: true,
+                          ),
+                          const SizedBox(height: 24),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 54,
+                            child: ElevatedButton(
+                              onPressed: () => _acceptRide(rideId, requestedCarType),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: mainPurpleColor,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16)),
+                              ),
+                              child: const Text(
+                                "Accept Ride",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               );
             },
           );
