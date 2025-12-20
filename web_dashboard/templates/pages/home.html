@@ -5,7 +5,7 @@
 <div class="container-fluid py-4">
   <div class="row g-4">
     <div class="col-12">
-      <h1 class="h4 mb-3">{% trans "Welcome" %} 👋</h1>
+      <h1 class="h4 mb-3">{% trans "Welcome" %} {{ user.username|capfirst }} </h1>
     </div>
     <div class="col-12 col-sm-6 col-xl-3">
       <div class="card stat-card">

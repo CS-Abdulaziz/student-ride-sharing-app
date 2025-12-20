@@ -137,3 +137,44 @@ table th, table td {
 }
 
 
+/* ===========================
+   Login Page
+   =========================== */
+.login-wrapper {
+  background: radial-gradient(1200px 600px at 10% 0%, color-mix(in srgb, var(--brand-color, var(--brand-color-fallback)) 14%, transparent), transparent 60%),
+              radial-gradient(1200px 600px at 90% 100%, color-mix(in srgb, var(--brand-color, var(--brand-color-fallback)) 12%, transparent), transparent 60%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--bs-body-bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+}
+
+.login-brand {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--brand-color, var(--brand-color-fallback)) 16%, transparent);
+  color: var(--brand-color, var(--brand-color-fallback));
+  font-size: 1.4rem;
+}
+
+.login-card .form-control {
+  border-radius: .6rem;
+  border-color: rgba(255, 255, 255, 0.12);
+  background-color: color-mix(in srgb, var(--bs-body-bg) 92%, black 8%);
+  color: var(--bs-body-color);
+}
+.login-card .form-control:focus {
+  border-color: color-mix(in srgb, var(--brand-color, var(--brand-color-fallback)) 50%, white 50%);
+  box-shadow: 0 0 0 .20rem color-mix(in srgb, var(--brand-color, var(--brand-color-fallback)) 16%, transparent);
+}
+
+.login-card .btn-primary {
+  border-radius: .6rem;
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
+}
+

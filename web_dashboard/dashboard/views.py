@@ -3,12 +3,13 @@ from .firebase_config import db
 from django.shortcuts import redirect
 import json
 from google.cloud import firestore as gcf
+from django.views.decorators.http import require_POST
+from django.http import HttpResponseBadRequest
+from django.contrib.auth.decorators import login_required
 
 
+# Helper: return list of Firestore documents with embedded id
 def _docs_to_list(collection_name: str):
-    """
-    Fetch all Firestore documents from a collection and return a list of dicts including ids.
-    """
     docs = db.collection(collection_name).stream()
     items = []
     for doc in docs:
@@ -18,10 +19,9 @@ def _docs_to_list(collection_name: str):
     return items
 
 
+# Dashboard home: show high-level counts
+@login_required(login_url='login')
 def home(request):
-    """
-    Dashboard home: show counts for drivers, users, rides, complaints.
-    """
     drivers_count = len(_docs_to_list("drivers"))
     users_count = len(_docs_to_list("users"))
     rides_count = len(_docs_to_list("rides"))
@@ -37,13 +37,11 @@ def home(request):
     return render(request, "pages/home.html", context)
 
 
+# Drivers list: search and sort
+@login_required(login_url='login')
 def drivers_list(request):
-    """
-    List all drivers.
-    """
     sort_value = (request.GET.get("sort") or "newest").lower()
     search_value = (request.GET.get("search") or "").strip().lower()
-    # Order by createdAt with fallback
     try:
         direction = gcf.Query.ASCENDING if sort_value == "oldest" else gcf.Query.DESCENDING
         q = db.collection("drivers").order_by("createdAt", direction=direction)
@@ -57,7 +55,6 @@ def drivers_list(request):
             drivers.append(data)
     except Exception:
         drivers = _docs_to_list("drivers")
-    # Python-side filtering (case-insensitive)
     if search_value:
         def _match(d):
             fields = [
@@ -74,13 +71,11 @@ def drivers_list(request):
     return render(request, "pages/drivers.html", context)
 
 
+# Rides list: include driver/passenger names and dynamic columns
+@login_required(login_url='login')
 def rides_list(request):
-    """
-    List all rides, with dynamic columns based on union of keys.
-    """
     sort_value = (request.GET.get("sort") or "newest").lower()
     search_value = (request.GET.get("search") or "").strip().lower()
-    # Order by createdAt with fallback
     try:
         direction = gcf.Query.ASCENDING if sort_value == "oldest" else gcf.Query.DESCENDING
         q = db.collection("rides").order_by("createdAt", direction=direction)
@@ -94,7 +89,6 @@ def rides_list(request):
             rides.append(data)
     except Exception:
         rides = _docs_to_list("rides")
-    # Build lookup maps for drivers and users to show human names
     driver_ids = set()
     user_ids = set()
     for r in rides:
@@ -134,7 +128,6 @@ def rides_list(request):
         pid = r.get("passengerId") or r.get("userId") or r.get("riderId")
         r["driverName"] = driver_id_to_name.get(did, "Not Assigned")
         r["passengerName"] = user_id_to_name.get(pid, "Not Assigned")
-    # Python-side filtering
     if search_value:
         def _match_r(v):
             fields = [
@@ -146,7 +139,6 @@ def rides_list(request):
             ]
             return any(search_value in str(x).lower() for x in fields if x is not None)
         rides = [r for r in rides if _match_r(r)]
-    # Pre-format complex values so templates can render directly without type checks
     for r in rides:
         for k, v in list(r.items()):
             if k == "id":
@@ -156,7 +148,6 @@ def rides_list(request):
                     r[k] = json.dumps(v, ensure_ascii=False)
                 except Exception:
                     r[k] = str(v)
-    # Determine a stable set of columns (union of keys, excluding 'id')
     columns_set = set()
     for r in rides:
         columns_set.update([k for k in r.keys() if k != "id"])
@@ -165,13 +156,11 @@ def rides_list(request):
     return render(request, "pages/rides.html", context)
 
 
+# Complaints list: searchable cards
+@login_required(login_url='login')
 def complaints_list(request):
-    """
-    List all complaints as cards.
-    """
     sort_value = (request.GET.get("sort") or "newest").lower()
     search_value = (request.GET.get("search") or "").strip().lower()
-    # Order by createdAt with fallback
     try:
         direction = gcf.Query.ASCENDING if sort_value == "oldest" else gcf.Query.DESCENDING
         q = db.collection("complaints").order_by("createdAt", direction=direction)
@@ -197,13 +186,11 @@ def complaints_list(request):
     return render(request, "pages/complaints.html", context)
 
 
+# Support tickets list: search and 
+@login_required(login_url='login')
 def support_list(request):
-    """
-    List all support tickets from 'support_tickets' collection.
-    """
     sort_value = (request.GET.get("sort") or "newest").lower()
     search_value = (request.GET.get("search") or "").strip().lower()
-    # Order by createdAt with fallback
     try:
         direction = gcf.Query.ASCENDING if sort_value == "oldest" else gcf.Query.DESCENDING
         q = db.collection("support_tickets").order_by("timestamp", direction=direction)
@@ -233,13 +220,11 @@ def support_list(request):
     return render(request, "pages/support.html", context)
 
 
+# Users list: search and sort
+@login_required(login_url='login')
 def users_list(request):
-    """
-    List all users.
-    """
     sort_value = (request.GET.get("sort") or "newest").lower()
     search_value = (request.GET.get("search") or "").strip().lower()
-    # Order by createdAt with fallback
     try:
         direction = gcf.Query.ASCENDING if sort_value == "oldest" else gcf.Query.DESCENDING
         q = db.collection("users").order_by("createdAt", direction=direction)
@@ -267,15 +252,11 @@ def users_list(request):
     return render(request, "pages/users.html", context)
 
 
-from django.views.decorators.http import require_POST
-from django.http import HttpResponseBadRequest
 
-
+# Update complaint status then redirect
+@login_required(login_url='login')
 @require_POST
 def update_complaint_status(request, complaint_id: str):
-    """
-    Update the complaint 'status' field and redirect back to complaints list.
-    """
     new_status = request.POST.get("status")
     if not new_status:
         return HttpResponseBadRequest("Missing status")
@@ -285,11 +266,10 @@ def update_complaint_status(request, complaint_id: str):
         print("Failed to update complaint:", complaint_id, exc)
     return redirect("complaints_list")
 
+# Update support ticket status then redirect
+@login_required(login_url='login')
 @require_POST
 def update_support_status(request, ticket_id: str):
-    """
-    Update a support ticket 'status' and redirect back to support list.
-    """
     new_status = request.POST.get("status")
     if not new_status:
         return HttpResponseBadRequest("Missing status")
@@ -300,16 +280,14 @@ def update_support_status(request, ticket_id: str):
     return redirect("support_list")
 
 
+# Update user fields then redirect
+@login_required(login_url='login')
 @require_POST
 def update_user(request, user_id: str):
-    """
-    Update user document fields (name, phone, role) then redirect to users list.
-    """
     payload = {
         "name": request.POST.get("name"),
         "phone": request.POST.get("phone"),
     }
-    # Remove None entries to avoid overwriting with null
     update_data = {k: v for k, v in payload.items() if v is not None}
     if not update_data:
         return redirect("users_list")
@@ -320,12 +298,10 @@ def update_user(request, user_id: str):
     return redirect("users_list")
 
 
+# Update driver fields then redirect
+@login_required(login_url='login')
 @require_POST
 def update_driver(request, driver_id: str):
-    """
-    Update driver document fields and redirect back to drivers list.
-    Editable: fullName, phone, vehicleBrand, vehicleModel, vehicleYear, vehiclePlate, vehicleColor, seats
-    """
     payload = {
         "fullName": request.POST.get("fullName"),
         "phone": request.POST.get("phone"),

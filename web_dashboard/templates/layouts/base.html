@@ -59,6 +59,14 @@
               <i class="bi bi-life-preserver me-2"></i> {% trans "Support" %}
             </a>
           </li>
+          <li class="mt-2">
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-light w-100">
+                <i class="bi bi-box-arrow-right me-2"></i> {% trans "Logout" %}
+              </button>
+            </form>
+          </li>
         </ul>
         <hr class="sidebar-divider mt-auto">
         <div class="small text-white-50">
