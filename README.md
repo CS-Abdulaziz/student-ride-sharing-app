@@ -78,6 +78,24 @@ student-ride-sharing-app/
 - Linking the driver with a student
 ---
 
+## Screens & UI
+
+### Login & Signup screens
+
+<img width="2200" height="1500" alt="8" src="https://github.com/user-attachments/assets/11f2b1c9-fb38-475f-a0a0-d8d2c8049364" />
+
+---
+### Available Rides & Current ride screens
+
+<img width="2200" height="1500" alt="9" src="https://github.com/user-attachments/assets/b64f1b78-3d38-400d-8fc5-432fd85c51aa" />
+
+---
+### Accepting Ride screen
+
+<img width="2200" height="1500" alt="10" src="https://github.com/user-attachments/assets/15a92575-ecd6-44f9-8573-1e67b174957f" />
+
+---
+
 ## Getting Started
 
 ### 1. Clone the repository
