@@ -40,11 +40,12 @@ student-ride-sharing-app/
 ├── driver_app/         # Driver mobile app 
 ├── shared_core/        # Shared models & business logic
 
+```
+
 ### Architectural Highlights
 * **Monorepo Modular Structure:** Organizes the entire system components in one place.
 * **Clean Code & Scalability:** Backend structured to handle data efficiently and support system growth.
 * **Clear Separation of Concerns:** Distinct boundaries between the UI (Flutter apps), the Web Dashboard, and the shared Database.
-```
 ---
 
 ## 🛠️ Tech Stack
