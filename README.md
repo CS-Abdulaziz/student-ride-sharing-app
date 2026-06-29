@@ -39,3 +39,52 @@ student-ride-sharing-app/
 ├── student_app/        # Student-facing mobile app
 ├── driver_app/         # Driver mobile app 
 ├── shared_core/        # Shared models & business logic
+
+### Architectural Highlights
+* **Monorepo Modular Structure:** Organizes the entire system components in one place.
+* **Clean Code & Scalability:** Backend structured to handle data efficiently and support system growth.
+* **Clear Separation of Concerns:** Distinct boundaries between the UI (Flutter apps), the Web Dashboard, and the shared Database.
+```
+---
+
+## 🛠️ Tech Stack
+
+### Web Dashboard (My Work)
+* **Framework:** Python, Django (Full Stack)
+* **Frontend:** HTML, CSS, JavaScript (Django Templates)
+* **Database:** Firebase (Realtime Database / Firestore integration)
+
+### Mobile Apps (Team's Work)
+* **Framework:** Flutter (Dart)
+* **Backend-as-a-Service:** Firebase
+
+---
+
+## 🚀 Admin Dashboard – Key Features (My Contribution)
+
+* **Centralized Management:** Full control over registered students, drivers, and ride statuses.
+* **Database Administration:** Direct and user-friendly interface for managing data seamlessly.
+* **Secure Access:** Protected admin login and session management.
+* **System Oversight:** Tracking active, completed, and canceled rides in real-time.
+
+> **Note:** The mobile application screens for students and drivers were developed by my teammates as part of our collaborative effort.
+
+---
+
+## 🖥️ Admin Dashboard Screens (My Work)
+
+* Secure Admin Login
+* Main Overview Dashboard
+* Drivers Management & Details
+* Users & Rides Tracking
+* Complaints & Support System
+
+---
+
+## 💻 Getting Started
+
+### 1. Clone the repository
+```bash
+git clone [https://github.com/OmarCsY/student-ride-sharing-app.git](https://github.com/OmarCsY/student-ride-sharing-app.git)
+cd student-ride-sharing-app
+
