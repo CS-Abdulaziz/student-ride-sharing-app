@@ -74,10 +74,6 @@ student-ride-sharing-app/
 
 ## 🖥️ Admin Dashboard Screens (My Work)
 
----
-
-## 🖥️ Admin Dashboard Screens (My Work)
-
 ### Secure Admin Login
 <img width="1000" alt="Secure Admin Login" src="https://github.com/user-attachments/assets/241ef3b4-2594-490a-acb2-5effc5f414cc" />
 
