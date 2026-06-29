@@ -74,11 +74,39 @@ student-ride-sharing-app/
 
 ## 🖥️ Admin Dashboard Screens (My Work)
 
-* Secure Admin Login
-* Main Overview Dashboard
-* Drivers Management & Details
-* Users & Rides Tracking
-* Complaints & Support System
+---
+
+## 🖥️ Admin Dashboard Screens (My Work)
+
+### Secure Admin Login
+<img width="1000" alt="Admin Login" src="<img width="1280" height="687" alt="Secure Admin Login" src="https://github.com/user-attachments/assets/241ef3b4-2594-490a-acb2-5effc5f414cc" />
+" />
+
+---
+### Main Overview Dashboard
+<img width="1000" alt="Main Dashboard" src="<img width="1280" height="682" alt="Main Overview Dashboard" src="https://github.com/user-attachments/assets/c39a828f-67f1-40c2-9b67-180bfab642e3" />
+" />
+
+---
+### Drivers Management & Details
+<img width="1000" alt="Drivers List" src="<img width="1280" height="684" alt="Drivers Management   Details" src="https://github.com/user-attachments/assets/211923d9-431e-4a76-a5d7-ca6dcf482f40" />
+" />
+<img width="1000" alt="Driver Details Modal" src="<img width="1280" height="685" alt="Drivers Management   Details 2" src="https://github.com/user-attachments/assets/4c1ff148-a999-49aa-9b07-ea307ffd8d21" />
+" />
+
+---
+### Users & Rides Tracking
+<img width="1000" alt="Users List" src="<img width="1280" height="687" alt="Users Management" src="https://github.com/user-attachments/assets/ec019366-778a-48ac-bdd3-d5db0c9557eb" />
+" />
+<img width="1000" alt="Rides Tracking" src="<img width="1280" height="684" alt="Rides Tracking" src="https://github.com/user-attachments/assets/edd8a0d7-0949-4e6d-ab63-5ffbe96dda39" />
+" />
+
+---
+### Complaints & Support System
+<img width="1000" alt="Complaints Management" src="<img width="1280" height="686" alt="Complaints" src="https://github.com/user-attachments/assets/10be86dc-1000-45c6-924f-a233bcbb59dc" />
+" />
+<img width="1000" alt="Support Ticket Resolution" src="<img width="1280" height="685" alt="Support" src="https://github.com/user-attachments/assets/02b26e8a-9a15-4827-b9ab-180f8e6ec7cc" />
+" />
 
 ---
 
