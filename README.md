@@ -51,8 +51,8 @@ student-ride-sharing-app/
 ## 🛠️ Tech Stack
 
 ### Web Dashboard (My Work)
-* **Framework:** Python, Django (Full Stack)
-* **Frontend:** HTML, CSS, JavaScript (Django Templates)
+* **Framework:** Python, Django
+* **Frontend:** HTML, CSS
 * **Database:** Firebase (Realtime Database / Firestore integration)
 
 ### Mobile Apps (Team's Work)
@@ -88,4 +88,25 @@ student-ride-sharing-app/
 ```bash
 git clone [https://github.com/OmarCsY/student-ride-sharing-app.git](https://github.com/OmarCsY/student-ride-sharing-app.git)
 cd student-ride-sharing-app
+```
+### 2. Setup the Admin Dashboard (Django)
+Navigate to the dashboard directory and run the server:
+```bash
+cd web_dashboard
+pip install -r requirements.txt
+python manage.py runserver
+```
+### 3. Setup the Mobile Apps (Flutter)
+For the driver or student app, navigate to their respective directories:
+```bash
+cd driver_app  # or cd student_app
+flutter pub get
+flutter run
+```
+---
 
+## 👨‍🎓 Author
+
+**Omar Al-Ali**
+* Computer Science Student
+* Full Stack Developer & AI Enthusiast
